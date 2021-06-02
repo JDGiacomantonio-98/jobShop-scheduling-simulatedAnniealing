@@ -46,37 +46,41 @@ class Job:
 
 	def add_node(self, node, parent): 
 		self.completion[node.id] =  [None for _ in range(node.solver.problem.machines)] if parent is None else copy(self.completion[parent.id])
-		self.releases[node.id] = copy(self.releases["init"])
-		self.weight[node.id] = copy(self.weight["init" if parent is None else parent.id])
+		if node.is_initialSol:
+			self.releases[node.id] = copy(self.releases["init"])
 
 	def getProcessingTime(self, onMachine: int = 1, weighted: bool = False, node=None):
-		node = "init" if node is None else node
 		try:
-			return self.processing_times[onMachine-1] if not weighted else self.processing_times[onMachine-1]/self.weight[node]
+			return self.processing_times[onMachine-1] if not weighted else self.processing_times[onMachine-1]/self.weight["init" if node is None else node.id]
 		except IndexError:
 			print(f"No such machine for this job: this job is processes on {len(self.processing_times)} machines")
 			return None
 
-	def getRelease(self, node: int = "init", onMachine: int = 1):
-		return self.releases[node][onMachine-1]
+	def getRelease(self, node =  None, onMachine: int = 1):
+		return self.releases["init" if node is None else node.id][onMachine-1]
 
 	def setRelease(self, r: int, node: int, onMachine: int = 1):
-		self.releases[node][onMachine-1] = r
+		try:
+			self.releases[node.id][onMachine-1] = r
+		except KeyError:
+			self.releases[node.id] = [r]
+		except IndexError:
+			self.releases[node.id].append(r)
 
-	def getCompletion(self, node: int = "init", onMachine: int = 1):
-		return self.completion[node][onMachine-1]
+	def getCompletion(self, node = None, onMachine: int = 1):
+		return self.completion["init" if node is None else node.id][onMachine-1]
 
 	def setCompletion(self, c: int, node: int, onMachine: int = 1):
-		self.completion[node][onMachine-1] = c
+		self.completion[node.id][onMachine-1] = c
 	
 
 class Node: 
 	"""This class hold the permutation currently under analysis and computes the objective function value it yields"""
 
-	def __init__(self, seq: list, solver, id: int = None, is_head: bool = False, childOf = None):
+	def __init__(self, seq: list, solver, id: int = None, is_initial: bool = False, childOf = None):
 		self.solver = solver
-		self.id = self.solver.nodes_count + 1 if id is None else id
-		self.is_head: bool = True if self.id == 0 else is_head
+		self.id = self.solver.nodes_count + 1 if id is None else 0 if is_initial else id
+		self.is_initialSol: bool = is_initial
 		self.seq = seq
 		self.seq_ideal_onLastMachine: List = None
 		self.fixed: Set = None
@@ -101,7 +105,7 @@ class Node:
 	
 	def getCompletion(self, onMachine: int = 2, up_to: int = None): # tries to access job completion for the node, on error trigger a schedule walk up to that job
 		try:
-			return self.seq[up_to].getCompletion(onMachine=onMachine, node=self.id)
+			return self.seq[up_to].getCompletion(onMachine=onMachine, node=self)
 		except KeyError: # the schedule has not be walked since here
 			self.walk_schedule(onMachine=onMachine, up_to=up_to)
 
@@ -123,7 +127,7 @@ class Node:
 	
 		"""
 		# Is there a better way to solve check eval the node?
-		#ss = perf_counter()
+		ss = perf_counter()
 		up_to = len(self.seq)-1 if up_to is None else up_to
 		onMachine = self.solver.problem.machines if onMachine is None else onMachine
 
@@ -134,11 +138,11 @@ class Node:
 			if up_to >= self.completion[1]//2:
 				c = self.completion[0]
 				for i in range(self.completion[1], up_to, -1):
-					c -= self.seq[i].getCompletion(onMachine=self.solver.problem.machines, node=self.id)
+					c -= self.seq[i].getCompletion(onMachine=self.solver.problem.machines, node=self)
 				return c
 			c = 0
 			for i in range(up_to+1):
-				c += self.seq[i].getCompletion(onMachine=self.solver.problem.machines, node=self.id)
+				c += self.seq[i].getCompletion(onMachine=self.solver.problem.machines, node=self)
 			return c
 			
 		# we have to walk farer than done so far, knowing the completion backward already calculated
@@ -148,30 +152,30 @@ class Node:
 			if i > up_to:
 				break
 			if i == 0:
-				if j.getCompletion(onMachine=self.solver.problem.machines, node=self.id) is None: # eval completion of first job on last machine
+				if j.getCompletion(onMachine=self.solver.problem.machines, node=self) is None: # eval completion of first job on last machine
 					j.completion[self.id] = copy(j.completion["init"])
-				self.completion[0] = j.getCompletion(onMachine=self.solver.problem.machines, node=self.id)
+				self.completion[0] = j.getCompletion(onMachine=self.solver.problem.machines, node=self)
 				self.completion[1] = 0
 				i += 1
 				continue
 			j.setCompletion(
-				max(self.seq[i-1].getCompletion(onMachine=1, node=self.id), j.getRelease(onMachine=1, node=self.id)) + j.getProcessingTime(1),
+				max(self.seq[i-1].getCompletion(onMachine=1, node=self), j.getRelease(onMachine=1)) + j.getProcessingTime(1),
 				onMachine=1,
-				node=self.id)
+				node=self)
 			for m in range(2, onMachine+1):
 				j.setCompletion(
-					max(self.seq[i-1].getCompletion(onMachine=m, node=self.id), j.getCompletion(onMachine=m-1, node=self.id)) + j.getProcessingTime(m),
+					max(self.seq[i-1].getCompletion(onMachine=m, node=self), j.getCompletion(onMachine=m-1, node=self)) + j.getProcessingTime(m),
 					onMachine=m,
-					node=self.id)
+					node=self)
 				if m == self.solver.problem.machines:
-					self.completion[0] += j.getCompletion(onMachine=m, node=self.id)
+					self.completion[0] += j.getCompletion(onMachine=m, node=self)
 			i += 1
 		if onMachine == self.solver.problem.machines:
 			self.completion[1] = up_to # remember the farest walked index of the schedule
 
-		#print(f"Node {self.id} (Child of Node {self.parent.id if self.parent is not None else 'None'}) : Eval schedule in: {perf_counter()-ss} -> C:{self.completion[0]}")
+		print(f"Node {self.id} (Child of Node {self.parent.id if self.parent is not None else 'None'}) : Eval schedule in: {perf_counter()-ss} -> C:{self.completion[0]}")
 		if up_to < len(self.seq)-1:
-			return self.seq[up_to].getCompletion(onMachine=onMachine, node=self.id)
+			return self.seq[up_to].getCompletion(onMachine=onMachine, node=self)
 		return self.completion[0]
 
 	def getProbaMove(self):
@@ -279,8 +283,8 @@ class Node:
 
 	def can_swap(self, target: int, to: int):
 		if target > to:
-			return True if self.seq[target].getRelease(node=self.id, onMachine=1) <= self.seq[to-1].getCompletion(node=self.id, onMachine=1) else False
-		return True if self.seq[to].getRelease(node=self.id, onMachine=1) <= self.seq[target-1].getCompletion(node=self.id, onMachine=1) else False
+			return True if self.seq[target].getRelease(onMachine=1) <= self.seq[to-1].getCompletion(node=self, onMachine=1) else False
+		return True if self.seq[to].getRelease(onMachine=1) <= self.seq[target-1].getCompletion(node=self, onMachine=1) else False
 
 	@staticmethod
 	def swap(n, target: int, to: int, parent=None):
@@ -316,14 +320,14 @@ class SimulatedAnnieling:
 		
 		if rule == "compressFloats-sptDownstream":
 			#ss = perf_counter()
-			n = Node(self.problem.sortBy_release(), solver=self)
-			head: int = n.seq[0].getRelease()
+			n = Node(self.problem.sortBy_release(), solver=self, is_initial=True)
+			head: int = n.seq[0].getRelease(node=n)
 			horizon: int = n.seq[0].getProcessingTime()
 			k: int = 0 # index of last job allocated in the sequence
 			target: int = int()
 			while k < len(n.seq)-1: # repeat until there are jobs to place
 				for i in range(k, len(n.seq)): # compute max time excursion where decisional trade-offs exists
-					if n.seq[i].getRelease() != head:
+					if n.seq[i].getRelease(node=n) != head:
 						break
 					if n.seq[i].getProcessingTime(1) >= horizon:
 						horizon = n.seq[i].getProcessingTime(1)
@@ -332,21 +336,21 @@ class SimulatedAnnieling:
 
 				min:int = horizon + n.seq[target].getProcessingTime(2)
 				for i in range(k, len(n.seq)): # select among the horizon-included jobs the one that minimize the float behind it
-					if n.seq[i].getRelease() + n.seq[i].getProcessingTime(1) > horizon:
+					if n.seq[i].getRelease(node=n) + n.seq[i].getProcessingTime(1) > horizon:
 						break
-					if n.seq[i].getRelease() + n.seq[i].getProcessingTime(1) + n.seq[i].getProcessingTime(2) < min:
-						min = n.seq[i].getRelease() + n.seq[i].getProcessingTime(1) + n.seq[i].getProcessingTime(2)
+					if n.seq[i].getRelease(node=n) + n.seq[i].getProcessingTime(1) + n.seq[i].getProcessingTime(2) < min:
+						min = n.seq[i].getRelease(node=n) + n.seq[i].getProcessingTime(1) + n.seq[i].getProcessingTime(2)
 						target = i
 
 				target = n.seq.pop(target)
 				n.seq.insert(k, target) # insert the job on the front of the seq and let the other shift by one
 				head = n.walk_schedule(onMachine=1, up_to=k)
 				for i in range(k+1, len(n.seq)): # updates the release dates among the horizon-included jobs considering that target will be placed before them
-					if n.seq[i].getRelease() + n.seq[i].getProcessingTime(1) > horizon:
+					if n.seq[i].getRelease(node=n) + n.seq[i].getProcessingTime(1) > horizon:
 						break
-					n.seq[i].setRelease(max(head, n.seq[i].getRelease()), node=n.id) # evaluate the node schedule completion in a lazy-fashion : up to the indicated node (node 0)
-				head = n.seq[k+1].getRelease()
-				horizon: int = n.seq[k+1].getProcessingTime()
+					n.seq[i].setRelease(max(head, n.seq[i].getRelease(node=n)), node=n) # evaluate the node schedule completion in a lazy-fashion : up to the indicated node (node 0)
+				head = n.seq[k+1].getRelease(node=n)
+				horizon: int = n.seq[k+1].getProcessingTime(1)
 				k += 1
 				'''
 				nn = Node(self.problem.sortBy_processingTimes(jobs=n.get_seq()[k+1:]), solver=self, id=-1) # arrange downstream-to-target jobs accordingly to SPT on M2
@@ -531,7 +535,7 @@ class Problem:
 
 		seq = list(self.jobs) if jobs is None else jobs
 		
-		seq.sort(key=lambda x:x.getRelease(node="init", onMachine=onMachine))
+		seq.sort(key=lambda x:x.getRelease(onMachine=onMachine))
 		if append_stats:
 			return (seq, min(seq), max(seq))
 		return seq
@@ -560,18 +564,18 @@ def throw_stats_to_file(stats_bin: list, file_loc_uri: str = f"{getcwd()}\\stats
 	with open(f"{file_loc_uri}\\run-instance-{stats_bin[1]}", "w") as f:
 		for i in stats_bin[0]:
 			f.write(i)
-
+'''
 for f in scandir(f"{getcwd()}\\instances"):
 	print(f"\n** INSTANCE : {f.name} **")
 	p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\{f.name}")
 	#p.solver.compare_initial_sols()
 	p.solver.benchmark_singleInstance()
-
-
 '''
-p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\test100_1.txt")
+
+
+p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\test100_2.txt")
 p.solver.solve()
-'''
+
 '''
 stats_bin = [[], int(time())]
 for f in scandir(f"{getcwd()}\\instances"):
