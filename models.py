@@ -9,35 +9,29 @@ from typing import Dict, List, Set, Tuple
 
 from scipy.stats import uniform
 
-# TO-DO: decide who between Problem and SA class should evaluate neighborghs and feasibily 
-
 
 class Job:
 	def __init__(
 			self,
 			id: int,
 			processing_times: Tuple[int],
-			release_dates: List[int],
-			due_date: int = int()):
+			release_dates: List[int]):
 
 		self.id = id
 		self.processing_times = processing_times
-		self.due = due_date
 
 		# the following dicts will store jobs data for each new node explored and will drop data if the node is discarded. Keys point to node IDs
 		# Initial solution node has ID=0
 		self.releases: Dict[str, List[int]] = {
 			"init": release_dates,
 		}
-		self.float: Dict[str, int] =  {
-			"init": 0,
-		} # on machine 2 : in this way is like 1||w(j)C(j)
+
+		self.completion: Dict[str, List[int]] = {
+			"init": [self.releases["init"][0] + self.processing_times[0], self.releases["init"][1] + self.processing_times[1]],
+		}
 
 		self.weight: Dict[str, int] = {
 			"init": 1,
-		}
-		self.completion: Dict[str, int] = {
-			"init": [self.releases["init"][0] + self.processing_times[0], self.releases["init"][1] + self.processing_times[1]],
 		}
 
 	def __eq__(self, j: object) -> bool:
@@ -46,17 +40,18 @@ class Job:
 	def __ne__(self, j: object) -> bool:
 		return True if self.id != j.id else False
 
-	def add_node(self, id):
-		self.completion[id] = copy(self.completion["init"])
-		self.releases[id] = copy(self.releases["init"])
-		self.weight[id] = copy(self.weight["init"])
-		self.float[id] = copy(self.float["init"])
+	def __repr__(self) -> str:
+		return f"J{self.id}"
 
-	def getProcessingTime(self, onMachine: int = 1, weighted: bool = False, addFloat: bool = False, node=None):
+
+	def add_node(self, node, parent): 
+		self.completion[node.id] =  [None for _ in range(node.solver.problem.machines)] if parent is None else copy(self.completion[parent.id])
+		self.releases[node.id] = copy(self.releases["init"])
+		self.weight[node.id] = copy(self.weight["init" if parent is None else parent.id])
+
+	def getProcessingTime(self, onMachine: int = 1, weighted: bool = False, node=None):
+		node = "init" if node is None else node
 		try:
-			if addFloat:
-				node = "init" if node is None else node
-				return ((self.processing_times[onMachine-1] + self.float[node])/self.weight[node]) if not weighted else self.processing_times[onMachine-1] + self.float[node]
 			return self.processing_times[onMachine-1] if not weighted else self.processing_times[onMachine-1]/self.weight[node]
 		except IndexError:
 			print(f"No such machine for this job: this job is processes on {len(self.processing_times)} machines")
@@ -68,59 +63,117 @@ class Job:
 	def setRelease(self, r: int, node: int, onMachine: int = 1):
 		self.releases[node][onMachine-1] = r
 
-	def set_float(self, f, node: int):
-		self.float[node] = f
-
-	def get_float(self, node: int):
-		return self.float[node]
-
 	def getCompletion(self, node: int = "init", onMachine: int = 1):
 		return self.completion[node][onMachine-1]
 
 	def setCompletion(self, c: int, node: int, onMachine: int = 1):
 		self.completion[node][onMachine-1] = c
-
-	def to_dict(self) -> dict:
-		return self.__dict__
-
-	def to_json(self) -> str:
-		json = "{"
-		for i, itm in enumerate(self.__dict__.items()):
-			json += f"{',' if i != 0 else ''}\n\t'{itm[0]}': {itm[1]}"
-		print(json + "\n}")
 	
-	def __repr__(self) -> str:
-		return f"J{self.id}"
-		
 
 class Node: 
 	"""This class hold the permutation currently under analysis and computes the objective function value it yields"""
 
-	def __init__(self, seq: list, solver, id: int = 0, is_head: bool = False,):
-		self.id = id
+	def __init__(self, seq: list, solver, id: int = None, is_head: bool = False, childOf = None):
+		self.solver = solver
+		self.id = self.solver.nodes_count + 1 if id is None else id
 		self.is_head: bool = True if self.id == 0 else is_head
 		self.seq = seq
 		self.seq_ideal_onLastMachine: List = None
 		self.fixed: Set = None
-		self.swaps: Set = None
-		self.initial_shift: int  = self.seq[0].getProcessingTime(1) + self.seq[0].getRelease("init", 1)
-		self.makespan: int  = None
-		self.completion: list = [None, None]
+		self.swaps: Set = None 
+		self.completion: List[int, int] = [None, -1] # [function value, schedule index since it has been walked throught] 
 
+		self.parent = None if childOf is None else childOf
 		self.neighborhood: Set = set()
-		self.solver = solver
 		self.probaMove: float = None
 
+		self.solver.nodes_count += 1
+
 		for j in self.seq:
-			j.add_node(self.id)
+			j.add_node(self, self.parent)
 		
 
 	def get_seq(self):
 		return self.seq[:]
+
+	def eval(self):
+		return self.completion[0] if self.completion[1] == len(self.seq)-1 else self.walk_schedule()
 	
-	def getCompletion(self, onMachine: int = 1):
-		return self.walk_schedule()[onMachine-1] if self.completion[onMachine-1] is None else self.completion[onMachine-1]
+	def getCompletion(self, onMachine: int = 2, up_to: int = None): # tries to access job completion for the node, on error trigger a schedule walk up to that job
+		try:
+			return self.seq[up_to].getCompletion(onMachine=onMachine, node=self.id)
+		except KeyError: # the schedule has not be walked since here
+			self.walk_schedule(onMachine=onMachine, up_to=up_to)
+
+	def walk_schedule(self, onMachine: int = None, up_to: int = None):
+		"""
+		It walks down the sequence of job to compute in linear time schedule parameters
+
+		Objective: MIN{ SUM(C_j) }
+		C[m] = ( n * ( K[m] + p[1][m] )) + SUM(from=1, to=n-1){ (n-i) * ( p[i+1][m] + MAX{ r[i+1][m]-MS(i), 0 ) } }
+
+		SUM(C(j)) = n*C[1] + SUM(from=', to=n-1){ (n-i)*C(i)}
+
+		K[1] = r[1][1]
+		K[m] = r[1][m-1] + p[1][m-1]
+
+		C[0] = MAX{ 0, r[1][m] }
+		C[1] = MS[0] + p[1][m]
+		C[i] = p[i][m] + MAX { MS[i-1], r[i][m] }
 	
+		"""
+		# Is there a better way to solve check eval the node?
+		#ss = perf_counter()
+		up_to = len(self.seq)-1 if up_to is None else up_to
+		onMachine = self.solver.problem.machines if onMachine is None else onMachine
+
+		if up_to == self.completion[1]:
+			return self.completion[0]
+		
+		if up_to < self.completion[1]: # we already walked up to that
+			if up_to >= self.completion[1]//2:
+				c = self.completion[0]
+				for i in range(self.completion[1], up_to, -1):
+					c -= self.seq[i].getCompletion(onMachine=self.solver.problem.machines, node=self.id)
+				return c
+			c = 0
+			for i in range(up_to+1):
+				c += self.seq[i].getCompletion(onMachine=self.solver.problem.machines, node=self.id)
+			return c
+			
+		# we have to walk farer than done so far, knowing the completion backward already calculated
+		start_from = 0 if self.completion[1] < 0 else self.completion[1] + 1
+		i = start_from
+		for j in self.seq[start_from:up_to+1]:
+			if i > up_to:
+				break
+			if i == 0:
+				if j.getCompletion(onMachine=self.solver.problem.machines, node=self.id) is None: # eval completion of first job on last machine
+					j.completion[self.id] = copy(j.completion["init"])
+				self.completion[0] = j.getCompletion(onMachine=self.solver.problem.machines, node=self.id)
+				self.completion[1] = 0
+				i += 1
+				continue
+			j.setCompletion(
+				max(self.seq[i-1].getCompletion(onMachine=1, node=self.id), j.getRelease(onMachine=1, node=self.id)) + j.getProcessingTime(1),
+				onMachine=1,
+				node=self.id)
+			for m in range(2, onMachine+1):
+				j.setCompletion(
+					max(self.seq[i-1].getCompletion(onMachine=m, node=self.id), j.getCompletion(onMachine=m-1, node=self.id)) + j.getProcessingTime(m),
+					onMachine=m,
+					node=self.id)
+				if m == self.solver.problem.machines:
+					self.completion[0] += j.getCompletion(onMachine=m, node=self.id)
+			i += 1
+		if onMachine == self.solver.problem.machines:
+			self.completion[1] = up_to # remember the farest walked index of the schedule
+
+		#print(f"Node {self.id} (Child of Node {self.parent.id if self.parent is not None else 'None'}) : Eval schedule in: {perf_counter()-ss} -> C:{self.completion[0]}")
+		if up_to < len(self.seq)-1:
+			return self.seq[up_to].getCompletion(onMachine=onMachine, node=self.id)
+		return self.completion[0]
+
 	def getProbaMove(self):
 		if self.probaMove is None:
 			self.solver.eval_probaMove(self)
@@ -137,7 +190,24 @@ class Node:
 					Node.swap(self, target, to)
 		return self
 
-	def getNeighborghs(self, rule='rand'):
+	def getNeighborghs(self, rule='explorative'):
+
+		if rule == "complete":
+			for x in range(len(self.seq)):
+				for y in range(x+1, len(self.seq)):
+					yield Node.swap(Node(seq=self.get_seq(), solver=self.solver, childOf=self), y, x, parent=self)
+
+		if rule == "explorative":
+			j = self.seq.index(choice(self.seq))
+			i = j
+			if uniform.rvs() > 0.5: # do swaps upstream, downstream otherwise
+				while i < len(self.seq):
+					yield Node.swap(Node(seq=self.get_seq(), solver=self.solver, childOf=self), j, i)
+					i += 1
+			else:
+				while i >= 0:
+					yield Node.swap(Node(seq=self.get_seq(), solver=self.solver, childOf=self), j, i)
+					i -= 1
 
 		if rule == "pullDownstream-alignedfix":
 			self.eval_ideal_downstream()
@@ -146,47 +216,31 @@ class Node:
 				i: int = 1
 				if self.can_swap(target, to):
 					n = Node(seq=self.get_seq(), solver=self.solver, id = i)
-					self.solver.eval_probaMove(n, temperature=self.solver.coolingProfile())
-					self.neighborhood.add(Node.swap(n, to, target))
+					self.solver.eval_probaMove(n, temperature=self.solver.annielingProcess())
+					yield Node.swap(n, to, target)
 					i += 1
 			return self.neighborhood
 
 		if rule == "rand-alignedfix":
 			self.eval_ideal_downstream()
-			i: int = 1
 			for to in self.eval_swaps(rule="conservative"):
 				for target in self.get_swaps() - {to}:
 					if self.can_swap(target, to):
-						n = Node(seq=self.get_seq(), solver=self.solver, id = i)
-						self.solver.eval_probaMove(Node.swap(n, to, target), temperature=self.solver.coolingProfile())
+						n = Node(seq=self.get_seq(), solver=self.solver)
+						self.solver.eval_probaMove(Node.swap(n, to, target), temperature=self.solver.annielingProcess())
+						yield n
 						self.neighborhood.add(n)
-						i += 1
-			return self.neighborhood
 
 		if rule == "rand":
 			target = randint(0, len(self.seq)-1)
 			to = randint(0, len(self.seq)-1)
-			i: int = 1
 			while self.can_swap(target, to):
 				target = randint(0, len(self.seq)-1)
 				to = randint(0, len(self.seq)-1)
-				self.neighborhood.add(Node.swap(Node(seq=self.get_seq(), solver=self.solver, id = i), to, target))
-				i += 1
-				continue
-			return self.neighborhood
-				
-		if rule == "explorative": # let this be a python generator
-			j = self.seq.index(choice(self.seq))
-			i = j
-			if uniform.rvs() > 0.5: # do swaps upstream, downstream otherwise
-				while i < len(self.seq):
-					yield Node.swap(Node(seq=self.get_seq(), solver=self.solver, id = self.id + 1), j, i)
-					i += 1
-			else:
-				while i >= 0:
-					yield Node.swap(Node(seq=self.get_seq(), solver=self.solver, id = self.id + 1), j, i)
-					i -= 1
-
+				yield Node.swap(Node(seq=self.get_seq(), solver=self.solver), to, target)
+		
+		if rule == "stress-best":
+			pass
 
 	def apply_perturbation(self, level: str = "soft-rand-alignedfix"):
 		i: int  = 0
@@ -204,7 +258,7 @@ class Node:
 						to: int = choice(tuple(self.eval_swaps(rule="conservative")))
 						target = self.seq.index(self.seq_ideal_onLastMachine[to])
 					except Exception:
-						print("ciao")
+						print("debug")
 				else:
 					break
 				continue
@@ -229,124 +283,45 @@ class Node:
 		return True if self.seq[to].getRelease(node=self.id, onMachine=1) <= self.seq[target-1].getCompletion(node=self.id, onMachine=1) else False
 
 	@staticmethod
-	def swap(n, target: int, to: int):
+	def swap(n, target: int, to: int, parent=None):
+		if to == 0:
+			n.seq[target].completion[n.id] = n.seq[target].completion["init"]
+		if  to != 0 and parent is not None:
+			n.completion[0] = parent.walk_schedule(up_to=to-1) 
+			n.completion[1] = to-1
 		n.seq[target], n.seq[to] = n.seq[to], n.seq[target]
 		return n
 
-	def eval(self):
-		return self.walk_schedule()[1] if self.completion[1] is None else self.completion[1]
-
 	def eval_ideal_downstream(self):
 		self.walk_schedule(returnList=False) if self.completion[0] is None else None
-		self.seq_ideal_onLastMachine = [j for j in self.solver.problem.sortBy_processingTimes(self.get_seq(), 2, weighted=True, addFloat=True)] if self.seq_ideal_onLastMachine is None else self.seq_ideal_onLastMachine
+		self.seq_ideal_onLastMachine = [j for j in self.solver.problem.sortBy_processingTimes(self.get_seq(), 2, weighted=True)] if self.seq_ideal_onLastMachine is None else self.seq_ideal_onLastMachine
 		self.eval_fixed()
-
-	def walk_schedule(self, onMachine: int = 2, up_to: int = None, returnList: bool = True):
-		"""
-		It walks down the sequence of job to compute in linear time schedule parameters
-
-		Objective: MIN{ SUM(C_j) }
-		C[m] = ( n * ( K[m] + p[1][m] )) + SUM(from=1, to=n-1){ (n-i) * ( p[i+1][m] + MAX{ r[i+1][m]-MS(i), 0 ) } }
-
-		SUM(C(j)) = n*C[1] + SUM(from=', to=n-1){ (n-i)*C(i)}
-
-		K[1] = r[1][1]
-		K[m] = r[1][m-1] + p[1][m-1]
-
-		C[0] = MAX{ 0, r[1][m] }
-		C[1] = MS[0] + p[1][m]
-		C[i] = p[i][m] + MAX { MS[i-1], r[i][m] }
-	
-		"""
-		# Is there a better way to solve check eval the node? 
-		# Can we save time when evaluating neighborgs?
-		up_to = len(self.seq) if up_to is None else up_to
-
-		if onMachine != 2:
-			for i, j in enumerate(self.seq):
-				if i > up_to:
-					break
-				if i == 0:
-					self.completion[0] = j.getCompletion(onMachine=1, node=self.id)
-					continue
-				j.setCompletion(
-					max(self.seq[i-1].getCompletion(onMachine=1, node=self.id), j.getRelease(onMachine=1, node=self.id)) + j.getProcessingTime(1),
-					onMachine=1,
-					node=self.id)
-				# self.completion[0] += j.getCompletion(onMachine=1, node=self.id) is it useful to know the sum of completion time on M1? mmh
-			return self.seq[i-1].getCompletion(onMachine=1, node=self.id)
-
-		for i, j in enumerate(self.seq):
-			if i > up_to:
-				break
-			if i == 0:
-				self.completion[0] = j.getCompletion(onMachine=1, node=self.id)
-				self.completion[1] = j.getCompletion(onMachine=2, node=self.id)
-				continue
-			j.setCompletion(
-				max(self.seq[i-1].getCompletion(onMachine=1, node=self.id), j.getRelease(onMachine=1, node=self.id)) + j.getProcessingTime(1),
-				onMachine=1,
-				node=self.id)
-			# j.set_release(j.getCompletion(node=self.id, onMachine=1), onMachine=2, node=self.id) // TO-DO: this instruction add +22% more time, do we need it? 
-			j.setCompletion(
-				max(self.seq[i-1].getCompletion(onMachine=2, node=self.id, ), j.getCompletion(onMachine=1, node=self.id)) + j.getProcessingTime(2),
-				onMachine=2,
-				node=self.id)
-			self.completion[0] += j.getCompletion(onMachine=1, node=self.id) # TO-DO: do we need this? Or can we save some time?
-			self.completion[1] += j.getCompletion(onMachine=2, node=self.id)
-			# self.seq[i-1].set_float(max(0, j.getCompletion(onMachine=1, node=self.id) - self.seq[i-1].getCompletion(onMachine=2, node=self.id)), node=self.id)  // TO-DO: this instruction +100% more time, do we need it?
-		self.makespan = j.getCompletion(node=self.id, onMachine=2)
-
-		if returnList:
-			return self.completion[:]
-		return self.completion[1]
 
 
 class SimulatedAnnieling:
-	def __init__(self, p, head: Node=None, T0: int=15000, coolingFunc=None, heatingFunc=None, probaFunc=None):
+	def __init__(self, p, head: Node=None, T0: int=15000, anniealingFunc=None, probaFunc=None):
 		self.id = p.id # TO-DO: this will address the possibility to link multiple solvers to same problem instance
 		self.problem = p
+		self.open_nodes: Set = set()
+		self.nodes_count: int = 0
 		self.best_found: str = [str(), int()] # stores the best schedule and the yielded problem value
 		self.head = self.set_initial_sol(rule="compressFloats-sptDownstream") if head is None else head   #  the current node to be evalauted (a feasible permutation of jobs) to be evaluated ... this method has to e changed with the best on averange initial sols generator
-		self.open_nodes: Set = set()
-		self.sol_bounds = [self.head.getCompletion(0), self.head.getCompletion(1)]
+
 		self.T = T0
-		self.coolingProfile = self.linearCooling if coolingFunc is None else coolingFunc
-		self.heatingProfile =  self.linearHeating if heatingFunc is None else heatingFunc
+		self.annielingProcess = self.linearCooling if anniealingFunc is None else anniealingFunc
 		self.probaEngine = self.sigmoidProbaFunc if probaFunc is None else probaFunc
 
 
-	def set_initial_sol(self, rule: str = "erd-spt"):
-		if rule == "rand":
-			seq = list(self.problem.jobs)
-			shuffle(seq)
-
-			return Node(seq=seq, solver=self, is_head=True)
-
-		if rule == "rmax":
-			seq = self.problem.sortBy_release()
-			ss = seq.pop(len(seq)-1)
-			seq.insert(0, ss)
-			seq = self.problem.sortBy_processingTimes(jobs=seq[1:])
-			seq.insert(0, ss)
-
-			return Node(seq=seq, solver=self, is_head=True)
+	def set_initial_sol(self, rule: str = "compressFloats-sptDownstream"):
 		
-		if rule == "erd-spt": # deprecated probably
-			n = Node(seq=self.problem.sortBy_release(), solver=self)
-			n.eval_ideal_downstream()
-			print(f"matching positions: {len(n.fixed)}") # TO-DO: further investigation of this to merge beeft of the two
-
-			return n.overlap_sequences() # ERD
-
 		if rule == "compressFloats-sptDownstream":
+			#ss = perf_counter()
 			n = Node(self.problem.sortBy_release(), solver=self)
 			head: int = n.seq[0].getRelease()
 			horizon: int = n.seq[0].getProcessingTime()
-			# the following code miss a part of "tracking where we have to insert the new best candidate job" - !! IMPORTANT THIS NEED TO BE SOLVED THIS IS ONLY PSEUDOCODE
-			k: int = 0 # index of alst job allocated in teh sequence
+			k: int = 0 # index of last job allocated in the sequence
 			target: int = int()
-			while k < len(n.seq)-1: # repeat until there are jobs to place 
+			while k < len(n.seq)-1: # repeat until there are jobs to place
 				for i in range(k, len(n.seq)): # compute max time excursion where decisional trade-offs exists
 					if n.seq[i].getRelease() != head:
 						break
@@ -386,30 +361,44 @@ class SimulatedAnnieling:
 						n.seq[i].setRelease(head, node=n.id) # evaluate the node schedule completion in a lazy-fashion : up to the indicated node (node 0)
 					k += 1
 				'''
+			#print(f"Initial solution generated in: {perf_counter()-ss}")
 			self.save_as_best(n)
 
 			return n
 
+		if rule == "erd-spt": # deprecated probably
+			n = Node(seq=self.problem.sortBy_release(), solver=self)
+			n.eval_ideal_downstream()
+			print(f"matching positions: {len(n.fixed)}") # TO-DO: further investigation of this to merge beeft of the two
+
+			return n.overlap_sequences() # ERD
+
+		if rule == "rand":
+			seq = list(self.problem.jobs)
+			shuffle(seq)
+
+			return Node(seq=seq, solver=self, is_head=True)
+
+		if rule == "rmax":
+			seq = self.problem.sortBy_release()
+			ss = seq.pop(len(seq)-1)
+			seq.insert(0, ss)
+			seq = self.problem.sortBy_processingTimes(jobs=seq[1:])
+			seq.insert(0, ss)
+
+			return Node(seq=seq, solver=self, is_head=True)
+		
 	def compare_initial_sols(self):
-		rules = ["rand", "rmax", "erd-spt", "compressFloats-sptDownstream"]
-		for r in rules:
-			n = self.set_initial_sol(rule=r)
-			print(f'"{r}" rule ->  C : {n.eval()}')
+		for rule in ["rand", "rmax", "erd-spt", "compressFloats-sptDownstream"]:
+			n = self.set_initial_sol(rule=rule)
+			print(f'"{rule}" rule ->  C : {n.eval()}')
 		return n
-
-
-	def set_head(self, n: Node):
-		n.id = 0
-		n.is_head = True
-		self.head = n
 	
-	def linearCooling(self, cooling_rate: float = 0.90):
-		self.T *= cooling_rate
-		return self.T
-	
-	def linearHeating(self, heating_rate: float = 0.90):
-		self.T *= heating_rate
-		return self.T
+	def linearCooling(self, rate: float = 0.90):
+		if uniform.rvs() > 0.9990: # apply perturbation in temperature
+			self.T = 10000*max(1.5, 3*uniform.rvs())
+		else:
+			self.T *= rate
 
 	def eval_probaMove(self, to: Node, temperature: float=None):
 		temperature = self.T if temperature is None else temperature
@@ -425,12 +414,43 @@ class SimulatedAnnieling:
 		return True if self.head != to and uniform.rvs() <= to.getProbaMove() else False
 	
 	def move_head(self, to: Node):
-		self.set_head(to)
-		# print(f"head moved! C: {self.head.eval()}")
+		self.head = to
+		#print(f"head moved! C: {self.head.eval()}")
 			
 	def solve(self, timeLimit=60, rule: str = "probabilistic"):
-		print(f"Initial head set! C: {self.head.eval()}")
+		print(f"\nInitial head set! C: {self.head.eval()}")
 
+		if rule == "probabilistic": # SA explore also bad moves probabilistically !
+			while perf_counter()-self.problem.starting_time <= timeLimit:
+				#ss = perf_counter()
+				progress = (perf_counter()-self.problem.starting_time)/timeLimit
+				for n in self.head.getNeighborghs(rule="complete" if progress <= 0.60 else "explorative"):
+					self.annielingProcess(rate=1+(self.problem.starting_time/(max(0.96, self.T*uniform.rvs())*perf_counter())))
+					#print(f"T : {self.T}")
+					if self.eval_move(n):
+						self.open_nodes.add(n)
+					if n.eval() < self.best_found[1]:
+						self.save_as_best(n)
+				try:
+					self.move_head(choice(tuple(self.open_nodes)))
+				except IndexError:
+					try:
+						for n in self.head.getNeighborghs(rule="rand-alignedfix"):
+							if self.eval_move(n):
+								self.open_nodes.add(n)
+						self.move_head(choice(tuple(self.open_nodes)))
+						self.open_nodes - {self.head}
+					except IndexError:
+						self.print_answer()
+						self.save_stats(useBin=self.problem.stats_bin is not None)
+						quit()
+				else:
+					self.open_nodes -= {self.head}
+					self.annielingProcess(0.96)
+				#print(f"explore neighborhood in: {perf_counter()-ss}")
+			self.print_answer()
+			self.save_stats(useBin=self.problem.stats_bin is not None)
+			
 		if rule == "firstImprovement":
 			while perf_counter()-self.problem.starting_time <= timeLimit:
 				for n in self.head.getNeighborghs(rule="pullDownstream-alignedfix"):
@@ -459,32 +479,20 @@ class SimulatedAnnieling:
 			self.print_answer()
 			self.save_stats()
 
-		if rule == "probabilistic": # SA explore also bad moves probabilistically !
-			i=0
-			while perf_counter()-self.problem.starting_time <= timeLimit:
-				best = self.head
-				for n in self.head.getNeighborghs(rule="explorative"):
-					if self.eval_move(n):
-						self.open_nodes.add(n)
-					if n.eval() < self.best_found[1]:
-						self.save_as_best(n)
-				try:
-					self.move_head(choice(tuple(self.open_nodes)))
-					self.open_nodes - {self.head}
-				except IndexError:
-					for n in self.head.getNeighborghs(rule="rand-alignedfix"):
-						if self.eval_move(n):
-							self.open_nodes.add(n)
-					self.move_head(choice(tuple(self.open_nodes)))
-					self.open_nodes - {self.head}
-			self.print_answer()
-			self.save_stats(useBin=self.problem.stats_bin is not None)
+	def benchmark_singleInstance(self, runs: int = 20):
+		for _ in range(runs):
+			self.problem.starting_time = perf_counter()
+			self.__init__(self.problem)
+			self.solve()
 
 	def save_as_best(self, n: Node):
 		self.best_found[0], self.best_found[1] = f"{n.get_seq()}", n.eval()
 
 	def print_answer(self):
-		print(f"{self.best_found[0]} : C = {self.best_found[1]}")
+		print("\n|********************** || RESULTS || ***********************|")
+		print(f"nodes evaluated : {self.nodes_count}")
+		print(f"Cmin found = {self.best_found[1]}")
+		print(f"best schedule :\n{self.best_found[0]}")
 	
 	def save_stats(self, folder_uri: str = f"{getcwd()}\\stats", useBin: bool = False):
 		stats: str = f"** {self.problem.dataset_loc} **\nBEST C : {self.head.eval()}\nBest sequence : \n{self.head.get_seq()}\n"
@@ -493,7 +501,7 @@ class SimulatedAnnieling:
 		else:
 			with open(f"{folder_uri}\\run-instance-{self.problem.id}_{self.id}", "w") as f:
 				f.write(stats)
-
+	
 
 class Problem:
 	def __init__(self, id: int = token_hex(8), solver = None, jobs_file_uri: str = f"{getcwd()}\\instances\\test_small.txt", stats_bin: list = None):
@@ -528,14 +536,13 @@ class Problem:
 			return (seq, min(seq), max(seq))
 		return seq
 
-	def sortBy_processingTimes(self, jobs: list = None, onMachine: int = 1, weighted: bool = False, addFloat: bool = False, caller: Node = None):
+	def sortBy_processingTimes(self, jobs: list = None, onMachine: int = 1, weighted: bool = False, caller: Node = None):
 
 		seq = list(self.jobs) if jobs is None else jobs
 
 		if caller is None:
 			weighted = False
-			addFloat = False
-		seq.sort(key=lambda x:x.getProcessingTime(onMachine=onMachine, weighted=weighted, addFloat=addFloat, node=caller))
+		seq.sort(key=lambda x:x.getProcessingTime(onMachine=onMachine, weighted=weighted, node=caller))
 		return seq
 		
 
@@ -558,9 +565,13 @@ for f in scandir(f"{getcwd()}\\instances"):
 	print(f"\n** INSTANCE : {f.name} **")
 	p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\{f.name}")
 	#p.solver.compare_initial_sols()
-	p.solver.solve()
+	p.solver.benchmark_singleInstance()
 
 
+'''
+p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\test100_1.txt")
+p.solver.solve()
+'''
 '''
 stats_bin = [[], int(time())]
 for f in scandir(f"{getcwd()}\\instances"):
