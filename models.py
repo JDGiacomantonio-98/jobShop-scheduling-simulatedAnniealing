@@ -173,7 +173,7 @@ class Node:
 		if onMachine == self.solver.problem.machines:
 			self.completion[1] = up_to # remember the farest walked index of the schedule
 
-		print(f"Node {self.id} (Child of Node {self.parent.id if self.parent is not None else 'None'}) : Eval schedule in: {perf_counter()-ss} -> C:{self.completion[0]}")
+		#print(f"Node {self.id} (Child of Node {self.parent.id if self.parent is not None else 'None'}) : Eval schedule in: {perf_counter()-ss} -> C:{self.completion[0]}")
 		if up_to < len(self.seq)-1:
 			return self.seq[up_to].getCompletion(onMachine=onMachine, node=self)
 		return self.completion[0]
@@ -204,11 +204,13 @@ class Node:
 		if rule == "explorative":
 			j = self.seq.index(choice(self.seq))
 			i = j
-			if uniform.rvs() > 0.5: # do swaps upstream, downstream otherwise
+			if uniform.rvs() > 0.5: # do swaps upstream
+				i += 1
 				while i < len(self.seq):
 					yield Node.swap(Node(seq=self.get_seq(), solver=self.solver, childOf=self), j, i)
 					i += 1
-			else:
+			else:  # do swaps downstream
+				i -= 1
 				while i >= 0:
 					yield Node.swap(Node(seq=self.get_seq(), solver=self.solver, childOf=self), j, i)
 					i -= 1
@@ -308,15 +310,22 @@ class SimulatedAnnieling:
 		self.problem = p
 		self.open_nodes: Set = set()
 		self.nodes_count: int = 0
-		self.best_found: str = [str(), int()] # stores the best schedule and the yielded problem value
-		self.head = self.set_initial_sol(rule="compressFloats-sptDownstream") if head is None else head   #  the current node to be evalauted (a feasible permutation of jobs) to be evaluated ... this method has to e changed with the best on averange initial sols generator
+		self.head = head if isinstance(head, Node) else self.set_initial_sol(rule="compressFloats-sptDownstream") if head is None else self.set_initial_sol(rule="custom")#  the current node to be evalauted (a feasible permutation of jobs) to be evaluated ... this method has to e changed with the best on averange initial sols generator
+		self.best: Node = copy(self.head)
 
 		self.T = T0
 		self.annielingProcess = self.linearCooling if anniealingFunc is None else anniealingFunc
 		self.probaEngine = self.sigmoidProbaFunc if probaFunc is None else probaFunc
 
+		self.timeLimit = 60
 
-	def set_initial_sol(self, rule: str = "compressFloats-sptDownstream"):
+	def setTimeLimit(self, t: int) -> None:
+		self.timeLimit = t
+
+	def getProgress(self) -> float:
+		return (perf_counter()-self.problem.starting_time)/self.timeLimit
+
+	def set_initial_sol(self, rule: str = "compressFloats-sptDownstream") -> Node:
 		
 		if rule == "compressFloats-sptDownstream":
 			#ss = perf_counter()
@@ -370,7 +379,7 @@ class SimulatedAnnieling:
 
 			return n
 
-		if rule == "erd-spt": # deprecated probably
+		if rule == "erd-spt":
 			n = Node(seq=self.problem.sortBy_release(), solver=self)
 			n.eval_ideal_downstream()
 			print(f"matching positions: {len(n.fixed)}") # TO-DO: further investigation of this to merge beeft of the two
@@ -381,7 +390,7 @@ class SimulatedAnnieling:
 			seq = list(self.problem.jobs)
 			shuffle(seq)
 
-			return Node(seq=seq, solver=self, is_head=True)
+			return Node(seq=seq, solver=self)
 
 		if rule == "rmax":
 			seq = self.problem.sortBy_release()
@@ -390,7 +399,18 @@ class SimulatedAnnieling:
 			seq = self.problem.sortBy_processingTimes(jobs=seq[1:])
 			seq.insert(0, ss)
 
-			return Node(seq=seq, solver=self, is_head=True)
+			return Node(seq=seq, solver=self)
+		
+		if rule == "custom":
+			seq = list()
+
+			print("please provide the sequence of jobs you want to load using the following format : 'job_ID(0)-job_ID(1)-...-job_ID(n)' like '23-80-2-...-10")
+			dna = input("Paste the sequence to load here >>> ").split("-")
+			for i in dna:
+				for j in self.problem.jobs:
+					if str(int(i)+1) == j.id:
+						seq.append(j)
+			return Node(seq=seq, solver=self, is_initial=True)
 		
 	def compare_initial_sols(self):
 		for rule in ["rand", "rmax", "erd-spt", "compressFloats-sptDownstream"]:
@@ -398,56 +418,58 @@ class SimulatedAnnieling:
 			print(f'"{rule}" rule ->  C : {n.eval()}')
 		return n
 	
-	def linearCooling(self, rate: float = 0.90):
+	def linearCooling(self, rate: float = 0.90) -> float:
 		if uniform.rvs() > 0.9990: # apply perturbation in temperature
 			self.T = 10000*max(1.5, 3*uniform.rvs())
 		else:
 			self.T *= rate
 
-	def eval_probaMove(self, to: Node, temperature: float=None):
+	def eval_probaMove(self, to: Node, temperature: float=None) -> None:
 		temperature = self.T if temperature is None else temperature
 		to.setProbaMove(self.probaEngine(neighborgh=to, temperature=temperature) if self.probaEngine == self.sigmoidProbaFunc else self.probaEngine(self.head, neighborgh=to, temperature=temperature))
 
 	def sigmoidProbaFunc(self, neighborgh: Node, temperature: int, minimisation=True) -> float:
-		k = ((neighborgh.eval() - self.head.eval())/temperature) if minimisation else ((self.head.eval() - neighborgh.eval())/temperature)
+		if minimisation:
+			if neighborgh.eval()/self.head.eval() > max(1.2, 1.8-self.getProgress()):
+				return 0
+			distance = neighborgh.eval() - self.head.eval()
+		else:
+			if neighborgh.eval()/self.head.eval() < 0.5+(self.getProgress()/2):
+				return 0
+			distance = self.head.eval() - neighborgh.eval()
+		k = (distance/temperature)
 		if k <= 230:
 			return 1/(1+(EXP**k))
 		return 0
 
-	def eval_move(self, to: Node):
-		return True if self.head != to and uniform.rvs() <= to.getProbaMove() else False
+	def eval_move(self, to: Node) -> bool:
+		return True if self.head != to and to.getProbaMove() > uniform.rvs() else False
 	
-	def move_head(self, to: Node):
+	def move_head(self, to: Node) -> None:
 		self.head = to
+		#print("haed moved to best" if self.head == self.best else "")
 		#print(f"head moved! C: {self.head.eval()}")
 			
-	def solve(self, timeLimit=60, rule: str = "probabilistic"):
+	def solve(self, timeLimit: int = None, rule: str = "probabilistic") -> None:
 		print(f"\nInitial head set! C: {self.head.eval()}")
+
+		if timeLimit is not None:
+			self.setTimeLimit(timeLimit)
 
 		if rule == "probabilistic": # SA explore also bad moves probabilistically !
 			while perf_counter()-self.problem.starting_time <= timeLimit:
 				#ss = perf_counter()
-				progress = (perf_counter()-self.problem.starting_time)/timeLimit
-				for n in self.head.getNeighborghs(rule="complete" if progress <= 0.60 else "explorative"):
+				for n in self.head.getNeighborghs(rule="explorative" if self.getProgress() <= 0.4 else "complete"):
 					self.annielingProcess(rate=1+(self.problem.starting_time/(max(0.96, self.T*uniform.rvs())*perf_counter())))
 					#print(f"T : {self.T}")
 					if self.eval_move(n):
 						self.open_nodes.add(n)
-					if n.eval() < self.best_found[1]:
+					if n.eval() < self.best.eval():
 						self.save_as_best(n)
 				try:
-					self.move_head(choice(tuple(self.open_nodes)))
+					self.move_head(self.best) if self.getProgress() >= 0.75 and uniform.rvs() > 1-self.getProgress() else self.move_head(choice(tuple(self.open_nodes))) 
 				except IndexError:
-					try:
-						for n in self.head.getNeighborghs(rule="rand-alignedfix"):
-							if self.eval_move(n):
-								self.open_nodes.add(n)
-						self.move_head(choice(tuple(self.open_nodes)))
-						self.open_nodes - {self.head}
-					except IndexError:
-						self.print_answer()
-						self.save_stats(useBin=self.problem.stats_bin is not None)
-						quit()
+					self.move_head(self.best)
 				else:
 					self.open_nodes -= {self.head}
 					self.annielingProcess(0.96)
@@ -483,20 +505,20 @@ class SimulatedAnnieling:
 			self.print_answer()
 			self.save_stats()
 
-	def benchmark_singleInstance(self, runs: int = 20):
+	def benchmark_singleInstance(self, runs: int = 20) -> None:
 		for _ in range(runs):
 			self.problem.starting_time = perf_counter()
 			self.__init__(self.problem)
 			self.solve()
 
-	def save_as_best(self, n: Node):
-		self.best_found[0], self.best_found[1] = f"{n.get_seq()}", n.eval()
+	def save_as_best(self, n: Node) -> None:
+		self.best = copy(n)
 
-	def print_answer(self):
+	def print_answer(self) -> str:
 		print("\n|********************** || RESULTS || ***********************|")
 		print(f"nodes evaluated : {self.nodes_count}")
-		print(f"Cmin found = {self.best_found[1]}")
-		print(f"best schedule :\n{self.best_found[0]}")
+		print(f"Cmin found = {self.best.completion[0]}")
+		print(f"best schedule :\n{self.best.get_seq()}")
 	
 	def save_stats(self, folder_uri: str = f"{getcwd()}\\stats", useBin: bool = False):
 		stats: str = f"** {self.problem.dataset_loc} **\nBEST C : {self.head.eval()}\nBest sequence : \n{self.head.get_seq()}\n"
@@ -508,7 +530,7 @@ class SimulatedAnnieling:
 	
 
 class Problem:
-	def __init__(self, id: int = token_hex(8), solver = None, jobs_file_uri: str = f"{getcwd()}\\instances\\test_small.txt", stats_bin: list = None):
+	def __init__(self, id: int = token_hex(8), solver = None, jobs_file_uri: str = f"{getcwd()}\\instances\\test_small.txt", stats_bin: list = None, useCustomSolution: bool = None):
 		
 		self.id = id
 		self.machines: int = 2
@@ -517,7 +539,7 @@ class Problem:
 		self.load_jobs_from_file(jobs_file_uri)
 		self.stats_bin = stats_bin
 
-		self.solver = SimulatedAnnieling(p=self) if solver is None else solver
+		self.solver = SimulatedAnnieling(p=self, head=useCustomSolution) if solver is None else solver
 		self.starting_time = perf_counter()
 
 
@@ -568,13 +590,13 @@ def throw_stats_to_file(stats_bin: list, file_loc_uri: str = f"{getcwd()}\\stats
 for f in scandir(f"{getcwd()}\\instances"):
 	print(f"\n** INSTANCE : {f.name} **")
 	p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\{f.name}")
-	#p.solver.compare_initial_sols()
-	p.solver.benchmark_singleInstance()
+	p.solver.benchmark_singleInstance(runs=30)
 '''
 
 
-p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\test100_2.txt")
-p.solver.solve()
+p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\test100_1.txt")
+p.solver.solve(timeLimit=60)
+
 
 '''
 stats_bin = [[], int(time())]
