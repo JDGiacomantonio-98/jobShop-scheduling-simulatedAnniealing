@@ -1,0 +1,360 @@
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_0.txt **
+Nodes evalauted : 85704
+BEST C : 267072
+Best sequence : 
+[J64, J92, J90, J6, J1, J25, J94, J95, J33, J77, J8, J46, J53, J15, J80, J66, J42, J89, J7, J24, J2, J19, J91, J75, J73, J82, J16, J96, J30, J70, J17, J56, J41, J28, J36, J50, J63, J14, J11, J45, J88, J99, J51, J44, J86, J79, J57, J71, J5, J55, J93, J29, J23, J47, J31, J38, J37, J9, J98, J3, J52, J59, J84, J4, J48, J54, J40, J100, J74, J12, J18, J27, J76, J67, J60, J58, J26, J68, J32, J49, J21, J20, J22, J39, J83, J81, J69, J97, J78, J34, J35, J43, J61, J72, J87, J13, J10, J62, J85, J65]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_0.txt **
+Nodes evalauted : 89382
+BEST C : 267229
+Best sequence : 
+[J64, J92, J90, J6, J1, J25, J94, J95, J33, J77, J8, J46, J53, J15, J80, J66, J42, J89, J7, J24, J2, J19, J96, J75, J73, J82, J16, J97, J30, J70, J17, J28, J41, J56, J36, J50, J63, J14, J11, J45, J88, J99, J51, J44, J86, J79, J57, J71, J5, J55, J93, J29, J23, J47, J31, J38, J37, J9, J98, J3, J52, J59, J84, J4, J48, J54, J40, J100, J74, J12, J18, J27, J76, J67, J60, J58, J26, J68, J32, J49, J21, J20, J22, J39, J83, J81, J69, J91, J78, J34, J35, J43, J61, J72, J87, J13, J10, J62, J85, J65]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_0.txt **
+Nodes evalauted : 91976
+BEST C : 268522
+Best sequence : 
+[J64, J92, J90, J6, J1, J25, J94, J95, J77, J74, J8, J46, J53, J15, J34, J66, J42, J89, J7, J24, J2, J19, J91, J75, J73, J82, J16, J96, J30, J70, J17, J28, J41, J56, J36, J50, J63, J14, J11, J20, J88, J99, J51, J44, J86, J79, J57, J71, J5, J55, J93, J29, J23, J47, J31, J38, J37, J9, J98, J3, J52, J59, J84, J4, J48, J54, J40, J100, J78, J12, J18, J27, J76, J67, J60, J58, J26, J68, J32, J49, J21, J45, J22, J39, J83, J81, J69, J97, J13, J80, J35, J43, J61, J72, J87, J33, J10, J62, J85, J65]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_1.txt **
+Nodes evalauted : 81413
+BEST C : 248475
+Best sequence : 
+[J44, J90, J69, J4, J28, J13, J30, J86, J99, J1, J77, J64, J6, J56, J34, J10, J82, J8, J16, J39, J24, J20, J88, J47, J58, J11, J74, J89, J43, J93, J85, J100, J19, J49, J41, J91, J2, J73, J50, J9, J21, J3, J17, J7, J61, J46, J94, J71, J72, J98, J57, J45, J35, J63, J36, J37, J42, J32, J29, J76, J60, J78, J59, J26, J27, J65, J68, J79, J83, J12, J53, J67, J38, J31, J87, J97, J81, J80, J48, J75, J62, J15, J92, J18, J70, J33, J55, J25, J66, J54, J96, J84, J95, J14, J23, J51, J52, J5, J40, J22]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_1.txt **
+Nodes evalauted : 88082
+BEST C : 248717
+Best sequence : 
+[J44, J90, J69, J64, J28, J13, J4, J30, J56, J1, J34, J86, J99, J6, J77, J16, J82, J8, J10, J39, J24, J20, J88, J47, J58, J11, J74, J89, J43, J93, J85, J100, J19, J49, J41, J91, J2, J73, J50, J9, J21, J3, J17, J7, J61, J46, J94, J29, J45, J98, J32, J78, J35, J63, J72, J71, J42, J57, J37, J76, J60, J68, J59, J67, J27, J65, J26, J79, J83, J12, J53, J36, J38, J31, J87, J97, J81, J80, J48, J75, J62, J15, J92, J18, J70, J33, J55, J25, J66, J54, J96, J95, J84, J14, J23, J51, J52, J5, J40, J22]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_1.txt **
+Nodes evalauted : 88883
+BEST C : 248245
+Best sequence : 
+[J44, J90, J69, J64, J28, J4, J13, J77, J99, J34, J1, J86, J6, J56, J30, J10, J82, J8, J16, J39, J24, J20, J88, J47, J58, J11, J74, J89, J43, J93, J85, J100, J19, J49, J41, J91, J2, J73, J50, J9, J21, J3, J17, J7, J61, J46, J94, J38, J45, J98, J32, J72, J35, J29, J36, J37, J63, J57, J42, J76, J60, J68, J59, J67, J79, J65, J26, J27, J83, J12, J53, J78, J71, J31, J87, J97, J81, J80, J48, J75, J62, J15, J92, J18, J70, J33, J55, J25, J66, J54, J96, J84, J95, J14, J23, J51, J52, J5, J40, J22]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_10.txt **
+Nodes evalauted : 76038
+BEST C : 284936
+Best sequence : 
+[J23, J95, J89, J92, J94, J60, J20, J77, J37, J85, J68, J58, J80, J96, J34, J82, J91, J13, J73, J54, J14, J27, J41, J9, J42, J53, J3, J11, J76, J62, J32, J24, J1, J75, J55, J38, J61, J25, J81, J43, J12, J30, J87, J79, J46, J57, J16, J50, J4, J19, J29, J18, J51, J22, J6, J93, J45, J21, J70, J65, J26, J71, J59, J44, J40, J48, J100, J99, J86, J69, J97, J10, J67, J8, J52, J66, J7, J78, J36, J33, J56, J90, J35, J49, J84, J63, J39, J88, J31, J2, J28, J72, J15, J83, J17, J98, J47, J74, J5, J64]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_10.txt **
+Nodes evalauted : 79335
+BEST C : 282801
+Best sequence : 
+[J23, J95, J89, J58, J94, J60, J20, J77, J85, J37, J68, J92, J80, J96, J34, J82, J91, J13, J47, J54, J41, J27, J5, J9, J42, J53, J50, J11, J76, J62, J32, J24, J12, J75, J55, J38, J61, J25, J81, J43, J14, J30, J87, J79, J46, J57, J16, J66, J4, J73, J29, J18, J51, J22, J6, J93, J2, J21, J70, J65, J26, J71, J86, J44, J40, J48, J100, J99, J78, J28, J97, J10, J67, J8, J36, J45, J7, J33, J59, J52, J56, J90, J84, J49, J1, J35, J88, J39, J63, J3, J69, J72, J15, J83, J17, J98, J19, J74, J31, J64]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_10.txt **
+Nodes evalauted : 78159
+BEST C : 283492
+Best sequence : 
+[J23, J95, J89, J58, J94, J60, J20, J77, J85, J37, J68, J92, J80, J96, J34, J82, J91, J13, J12, J54, J14, J27, J5, J9, J42, J53, J50, J11, J76, J62, J32, J24, J41, J75, J55, J38, J61, J43, J81, J25, J59, J30, J87, J79, J46, J57, J16, J66, J4, J19, J29, J18, J51, J22, J6, J93, J2, J21, J70, J65, J26, J90, J1, J44, J40, J48, J100, J99, J78, J28, J72, J7, J67, J8, J52, J45, J10, J86, J84, J36, J56, J71, J35, J49, J33, J73, J88, J39, J63, J3, J69, J97, J15, J83, J17, J98, J47, J74, J31, J64]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_11.txt **
+Nodes evalauted : 77936
+BEST C : 268983
+Best sequence : 
+[J87, J96, J71, J88, J93, J1, J23, J48, J59, J84, J38, J17, J4, J39, J46, J68, J22, J90, J47, J16, J50, J73, J12, J24, J41, J28, J30, J76, J66, J63, J75, J55, J91, J62, J89, J21, J18, J8, J11, J10, J64, J92, J34, J98, J29, J5, J31, J43, J77, J78, J44, J26, J99, J25, J86, J3, J95, J33, J37, J19, J81, J45, J72, J13, J15, J14, J42, J80, J83, J61, J56, J52, J67, J58, J35, J65, J57, J70, J6, J100, J53, J20, J74, J7, J97, J51, J82, J94, J49, J85, J40, J36, J32, J79, J2, J54, J9, J27, J60, J69]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_11.txt **
+Nodes evalauted : 89414
+BEST C : 269882
+Best sequence : 
+[J96, J87, J71, J88, J93, J1, J68, J48, J59, J84, J38, J91, J4, J39, J46, J17, J22, J90, J47, J16, J50, J73, J12, J24, J41, J28, J30, J76, J66, J63, J75, J70, J45, J62, J64, J21, J18, J8, J11, J10, J97, J92, J82, J98, J29, J5, J31, J43, J77, J78, J44, J26, J61, J99, J86, J3, J95, J9, J37, J19, J20, J40, J72, J74, J53, J14, J42, J80, J83, J33, J56, J52, J65, J58, J35, J67, J57, J51, J6, J89, J7, J100, J13, J69, J81, J55, J34, J94, J49, J85, J15, J32, J36, J79, J2, J54, J25, J27, J60, J23]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_11.txt **
+Nodes evalauted : 72328
+BEST C : 270714
+Best sequence : 
+[J96, J87, J71, J88, J93, J1, J17, J48, J59, J84, J38, J91, J4, J39, J46, J68, J22, J90, J47, J16, J50, J73, J12, J24, J41, J28, J30, J76, J66, J63, J75, J70, J45, J62, J89, J21, J18, J8, J11, J10, J64, J92, J34, J98, J29, J5, J31, J43, J77, J78, J44, J26, J99, J25, J95, J3, J86, J33, J37, J19, J20, J15, J72, J13, J69, J14, J42, J80, J83, J61, J56, J52, J67, J58, J35, J65, J57, J51, J6, J100, J7, J97, J74, J53, J81, J55, J82, J94, J49, J85, J40, J36, J32, J79, J2, J54, J9, J27, J60, J23]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_12.txt **
+Nodes evalauted : 79229
+BEST C : 254292
+Best sequence : 
+[J54, J77, J15, J63, J12, J41, J70, J49, J60, J36, J76, J61, J68, J50, J3, J27, J16, J57, J25, J20, J91, J45, J56, J73, J43, J69, J71, J9, J86, J29, J82, J80, J98, J92, J53, J7, J13, J89, J90, J64, J55, J100, J32, J95, J21, J30, J14, J72, J84, J59, J58, J24, J66, J38, J8, J4, J74, J97, J17, J99, J75, J67, J31, J96, J65, J47, J62, J6, J5, J10, J37, J78, J11, J42, J48, J19, J22, J2, J23, J44, J83, J26, J85, J18, J40, J79, J88, J81, J51, J52, J35, J94, J46, J1, J39, J34, J87, J93, J28, J33]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_12.txt **
+Nodes evalauted : 85476
+BEST C : 253964
+Best sequence : 
+[J54, J77, J15, J63, J12, J41, J70, J49, J60, J36, J76, J61, J68, J50, J3, J27, J16, J57, J25, J20, J91, J45, J56, J73, J43, J69, J71, J30, J86, J29, J82, J80, J98, J92, J53, J7, J13, J89, J90, J64, J55, J100, J32, J95, J21, J9, J14, J72, J84, J59, J58, J24, J66, J38, J8, J4, J74, J97, J17, J99, J75, J67, J31, J96, J65, J47, J62, J6, J5, J10, J37, J78, J11, J42, J48, J19, J22, J2, J23, J44, J83, J26, J85, J40, J18, J79, J88, J81, J51, J52, J35, J94, J46, J1, J39, J34, J87, J93, J28, J33]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_12.txt **
+Nodes evalauted : 87306
+BEST C : 254292
+Best sequence : 
+[J54, J77, J15, J63, J12, J41, J70, J49, J60, J36, J76, J61, J68, J50, J3, J27, J16, J57, J25, J20, J91, J45, J56, J73, J43, J69, J71, J9, J86, J29, J82, J80, J98, J92, J53, J7, J13, J89, J90, J64, J55, J100, J32, J95, J21, J30, J14, J72, J84, J59, J58, J24, J66, J38, J8, J4, J74, J97, J17, J99, J75, J67, J31, J96, J65, J47, J62, J6, J5, J10, J37, J78, J11, J42, J48, J19, J22, J2, J23, J44, J83, J26, J85, J18, J40, J79, J88, J81, J51, J52, J35, J94, J46, J1, J39, J34, J87, J93, J28, J33]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_13.txt **
+Nodes evalauted : 84361
+BEST C : 271712
+Best sequence : 
+[J43, J13, J31, J40, J69, J29, J46, J88, J27, J32, J57, J67, J97, J35, J66, J59, J63, J58, J14, J77, J44, J38, J91, J78, J79, J60, J20, J12, J53, J100, J47, J24, J52, J73, J22, J92, J1, J48, J21, J70, J25, J26, J18, J17, J85, J64, J61, J36, J51, J96, J62, J9, J49, J54, J39, J5, J10, J55, J83, J8, J56, J3, J7, J84, J86, J98, J71, J30, J23, J99, J94, J68, J37, J90, J93, J80, J72, J34, J33, J65, J50, J76, J42, J2, J4, J45, J6, J16, J75, J87, J28, J74, J15, J82, J81, J11, J95, J41, J89, J19]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_13.txt **
+Nodes evalauted : 76414
+BEST C : 272540
+Best sequence : 
+[J43, J13, J31, J40, J69, J29, J46, J88, J27, J32, J57, J67, J97, J35, J66, J59, J63, J38, J14, J77, J44, J58, J91, J78, J79, J60, J20, J12, J53, J100, J47, J24, J52, J73, J22, J92, J1, J48, J21, J70, J25, J26, J18, J17, J85, J36, J64, J74, J51, J42, J62, J9, J49, J54, J39, J5, J76, J55, J61, J87, J56, J3, J7, J84, J86, J98, J71, J30, J23, J99, J94, J68, J37, J90, J93, J80, J72, J10, J83, J65, J50, J45, J96, J2, J4, J33, J6, J16, J75, J8, J28, J34, J15, J82, J81, J11, J95, J41, J89, J19]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_13.txt **
+Nodes evalauted : 80518
+BEST C : 271712
+Best sequence : 
+[J43, J13, J31, J40, J69, J29, J46, J88, J27, J32, J57, J67, J97, J35, J66, J59, J63, J58, J14, J77, J44, J38, J91, J78, J79, J60, J20, J12, J53, J100, J47, J24, J52, J73, J22, J92, J1, J48, J21, J70, J25, J26, J18, J17, J85, J64, J61, J36, J51, J96, J62, J9, J49, J54, J39, J5, J10, J55, J83, J8, J56, J3, J7, J84, J86, J98, J71, J30, J23, J99, J94, J68, J37, J90, J93, J80, J72, J34, J33, J65, J50, J76, J42, J2, J4, J45, J6, J16, J75, J87, J28, J74, J15, J82, J81, J11, J95, J41, J89, J19]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_14.txt **
+Nodes evalauted : 76437
+BEST C : 266801
+Best sequence : 
+[J50, J89, J34, J88, J90, J54, J33, J39, J53, J42, J66, J10, J46, J16, J55, J79, J30, J76, J63, J72, J71, J28, J40, J97, J38, J2, J43, J96, J83, J80, J84, J26, J57, J15, J78, J85, J35, J62, J47, J29, J81, J91, J13, J60, J99, J95, J94, J77, J3, J100, J61, J48, J14, J1, J41, J45, J21, J49, J37, J52, J9, J68, J23, J67, J92, J18, J65, J70, J32, J27, J11, J8, J22, J12, J56, J51, J31, J98, J25, J6, J36, J69, J20, J4, J19, J24, J59, J73, J7, J5, J86, J82, J87, J93, J74, J64, J17, J44, J75, J58]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_14.txt **
+Nodes evalauted : 76613
+BEST C : 266205
+Best sequence : 
+[J50, J89, J34, J88, J90, J54, J33, J39, J53, J42, J66, J10, J46, J16, J55, J79, J30, J76, J63, J72, J71, J28, J40, J97, J38, J43, J29, J96, J83, J80, J84, J57, J26, J15, J78, J85, J35, J62, J47, J2, J81, J91, J13, J60, J99, J95, J94, J77, J100, J48, J21, J61, J14, J1, J41, J45, J59, J49, J37, J52, J9, J68, J23, J67, J92, J18, J65, J3, J32, J27, J70, J8, J22, J11, J56, J51, J31, J98, J25, J6, J36, J69, J20, J4, J19, J24, J58, J73, J7, J5, J86, J82, J87, J93, J74, J64, J17, J44, J75, J12]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_14.txt **
+Nodes evalauted : 90377
+BEST C : 265174
+Best sequence : 
+[J50, J89, J34, J53, J90, J82, J33, J39, J88, J54, J66, J10, J46, J16, J55, J79, J30, J76, J63, J72, J71, J28, J40, J97, J38, J2, J29, J43, J85, J80, J84, J26, J57, J15, J78, J83, J35, J62, J47, J3, J81, J91, J13, J60, J99, J95, J94, J77, J100, J48, J21, J61, J14, J1, J45, J41, J59, J49, J37, J52, J9, J68, J23, J67, J92, J18, J42, J70, J32, J27, J11, J8, J22, J12, J56, J51, J31, J98, J25, J6, J36, J69, J20, J4, J19, J24, J96, J73, J7, J5, J86, J65, J87, J93, J74, J64, J17, J44, J75, J58]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_15.txt **
+Nodes evalauted : 83324
+BEST C : 266818
+Best sequence : 
+[J52, J95, J10, J91, J62, J44, J68, J87, J77, J94, J43, J6, J75, J66, J28, J79, J31, J97, J21, J14, J29, J5, J53, J74, J70, J45, J90, J82, J100, J27, J30, J24, J37, J99, J67, J36, J73, J81, J12, J23, J78, J60, J59, J19, J89, J92, J47, J65, J13, J22, J54, J8, J38, J26, J64, J7, J20, J63, J11, J58, J56, J25, J42, J18, J32, J46, J84, J86, J57, J72, J16, J35, J71, J17, J50, J3, J40, J55, J96, J83, J88, J48, J61, J41, J69, J15, J34, J39, J80, J49, J98, J93, J51, J2, J9, J1, J85, J33, J4, J76]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_15.txt **
+Nodes evalauted : 90439
+BEST C : 266493
+Best sequence : 
+[J52, J95, J10, J91, J62, J44, J68, J87, J77, J94, J43, J6, J75, J66, J28, J79, J31, J99, J21, J14, J29, J5, J53, J74, J70, J45, J90, J82, J34, J27, J30, J24, J37, J67, J63, J36, J73, J81, J12, J23, J78, J60, J59, J19, J89, J92, J47, J65, J13, J22, J54, J8, J26, J38, J3, J7, J20, J98, J100, J15, J64, J25, J42, J18, J32, J46, J84, J86, J57, J72, J16, J35, J71, J17, J50, J56, J40, J55, J96, J83, J97, J48, J61, J41, J69, J4, J11, J39, J80, J49, J88, J93, J51, J2, J9, J1, J85, J33, J58, J76]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_15.txt **
+Nodes evalauted : 86473
+BEST C : 266121
+Best sequence : 
+[J52, J95, J10, J91, J62, J44, J68, J87, J77, J94, J43, J6, J75, J66, J28, J79, J31, J97, J21, J14, J29, J5, J100, J74, J70, J45, J90, J82, J34, J27, J30, J24, J37, J67, J63, J36, J73, J81, J12, J23, J78, J60, J59, J19, J89, J92, J47, J65, J13, J22, J54, J7, J38, J26, J3, J61, J20, J98, J11, J15, J56, J25, J42, J18, J32, J46, J84, J86, J8, J72, J16, J39, J57, J17, J50, J64, J53, J55, J96, J83, J88, J48, J71, J41, J69, J4, J40, J35, J80, J49, J99, J93, J51, J2, J9, J1, J85, J33, J58, J76]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_16.txt **
+Nodes evalauted : 81316
+BEST C : 257472
+Best sequence : 
+[J82, J46, J91, J45, J4, J100, J1, J49, J90, J43, J80, J27, J69, J56, J40, J5, J75, J24, J94, J79, J47, J62, J44, J30, J35, J74, J16, J10, J31, J64, J70, J73, J59, J55, J53, J20, J9, J17, J83, J2, J78, J28, J85, J14, J15, J22, J86, J95, J50, J96, J25, J33, J12, J99, J71, J19, J8, J42, J38, J48, J66, J88, J23, J21, J51, J81, J6, J41, J52, J76, J11, J68, J26, J18, J36, J98, J72, J92, J67, J34, J93, J57, J3, J87, J39, J58, J97, J7, J60, J84, J13, J61, J63, J32, J29, J54, J77, J65, J37, J89]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_16.txt **
+Nodes evalauted : 80670
+BEST C : 257833
+Best sequence : 
+[J82, J46, J91, J45, J4, J100, J1, J49, J90, J43, J80, J27, J32, J56, J40, J94, J5, J24, J75, J79, J47, J62, J44, J30, J35, J74, J16, J10, J31, J64, J70, J73, J59, J55, J53, J20, J9, J17, J83, J2, J78, J28, J85, J14, J15, J22, J86, J95, J50, J96, J25, J33, J12, J99, J71, J19, J8, J42, J38, J48, J66, J88, J23, J21, J51, J81, J6, J41, J52, J76, J11, J68, J26, J18, J36, J98, J72, J92, J67, J34, J93, J57, J39, J87, J3, J58, J97, J7, J60, J84, J13, J61, J63, J69, J29, J54, J77, J65, J37, J89]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_16.txt **
+Nodes evalauted : 47012
+BEST C : 259143
+Best sequence : 
+[J82, J46, J91, J45, J4, J100, J1, J49, J90, J43, J80, J27, J32, J56, J40, J94, J5, J24, J75, J79, J47, J62, J44, J30, J35, J74, J16, J10, J31, J64, J70, J73, J93, J55, J53, J20, J9, J17, J83, J2, J28, J78, J85, J14, J15, J22, J86, J95, J50, J96, J25, J33, J12, J99, J71, J19, J8, J42, J38, J48, J59, J88, J23, J21, J51, J81, J87, J41, J52, J76, J11, J68, J26, J18, J36, J98, J72, J92, J67, J34, J60, J57, J3, J6, J39, J58, J97, J7, J66, J84, J13, J61, J63, J69, J29, J54, J77, J65, J37, J89]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_17.txt **
+Nodes evalauted : 69852
+BEST C : 265769
+Best sequence : 
+[J68, J83, J42, J6, J97, J8, J86, J47, J18, J12, J71, J13, J39, J21, J1, J100, J87, J40, J85, J22, J62, J59, J96, J72, J80, J69, J34, J27, J46, J91, J94, J4, J89, J9, J76, J23, J50, J31, J67, J5, J36, J92, J61, J56, J54, J24, J93, J48, J53, J63, J51, J7, J99, J66, J75, J43, J19, J90, J74, J25, J95, J77, J60, J16, J98, J57, J41, J10, J44, J45, J15, J30, J84, J20, J88, J35, J79, J58, J49, J82, J33, J70, J28, J65, J37, J52, J55, J17, J2, J73, J81, J32, J78, J38, J14, J3, J11, J64, J29, J26]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_17.txt **
+Nodes evalauted : 88850
+BEST C : 265953
+Best sequence : 
+[J68, J83, J42, J6, J97, J86, J8, J47, J18, J12, J71, J13, J39, J21, J1, J100, J87, J40, J85, J22, J62, J59, J66, J72, J80, J69, J34, J27, J96, J91, J94, J65, J26, J9, J76, J23, J50, J31, J67, J5, J36, J92, J17, J56, J54, J24, J93, J48, J89, J63, J51, J7, J99, J46, J75, J43, J61, J90, J74, J25, J95, J77, J60, J16, J98, J57, J41, J10, J44, J45, J15, J30, J84, J20, J88, J35, J79, J58, J49, J82, J53, J70, J28, J14, J78, J52, J55, J2, J19, J73, J33, J32, J37, J38, J4, J3, J11, J64, J29, J81]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_17.txt **
+Nodes evalauted : 82222
+BEST C : 265993
+Best sequence : 
+[J68, J83, J42, J6, J97, J86, J8, J47, J18, J12, J71, J13, J39, J21, J1, J100, J87, J40, J85, J22, J62, J59, J96, J72, J80, J69, J34, J27, J46, J91, J94, J4, J89, J9, J76, J23, J50, J31, J67, J5, J36, J92, J17, J56, J54, J24, J93, J48, J53, J63, J51, J7, J99, J66, J75, J43, J19, J90, J74, J25, J95, J77, J60, J16, J98, J57, J41, J10, J44, J45, J15, J30, J84, J20, J88, J35, J79, J58, J49, J82, J33, J70, J28, J65, J37, J52, J55, J61, J2, J73, J81, J32, J78, J38, J14, J3, J11, J64, J29, J26]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_18.txt **
+Nodes evalauted : 70302
+BEST C : 282052
+Best sequence : 
+[J69, J73, J61, J49, J19, J54, J95, J44, J52, J40, J27, J64, J5, J63, J55, J70, J62, J23, J87, J6, J21, J47, J29, J39, J57, J59, J75, J11, J91, J77, J60, J84, J46, J99, J30, J48, J51, J15, J90, J1, J45, J76, J12, J56, J31, J67, J14, J16, J28, J20, J98, J18, J36, J34, J33, J89, J72, J81, J24, J85, J58, J25, J79, J7, J97, J94, J2, J93, J37, J83, J4, J10, J38, J74, J80, J86, J26, J68, J88, J41, J8, J43, J100, J53, J66, J78, J71, J65, J96, J35, J13, J50, J17, J82, J32, J42, J9, J92, J22, J3]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_18.txt **
+Nodes evalauted : 86500
+BEST C : 281561
+Best sequence : 
+[J69, J73, J61, J49, J19, J54, J95, J44, J52, J40, J27, J64, J5, J23, J55, J70, J62, J45, J87, J6, J21, J47, J29, J75, J57, J59, J12, J11, J91, J78, J60, J84, J46, J99, J76, J48, J30, J15, J90, J1, J63, J100, J39, J56, J31, J66, J14, J17, J28, J20, J98, J18, J96, J34, J33, J89, J72, J81, J24, J50, J58, J25, J79, J7, J97, J94, J85, J93, J37, J83, J2, J77, J38, J51, J80, J86, J26, J68, J88, J41, J8, J16, J43, J53, J67, J10, J71, J82, J36, J35, J13, J4, J74, J65, J32, J42, J9, J92, J22, J3]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_18.txt **
+Nodes evalauted : 86423
+BEST C : 280956
+Best sequence : 
+[J69, J73, J61, J49, J19, J54, J95, J44, J52, J40, J27, J64, J5, J23, J55, J70, J62, J45, J87, J75, J21, J47, J29, J39, J57, J59, J12, J11, J78, J36, J60, J84, J46, J99, J30, J48, J51, J15, J90, J1, J63, J100, J6, J56, J31, J66, J14, J16, J28, J20, J98, J18, J26, J34, J33, J89, J72, J81, J24, J85, J58, J25, J79, J7, J97, J94, J2, J93, J37, J83, J4, J41, J91, J43, J80, J86, J96, J68, J88, J10, J8, J74, J77, J53, J67, J38, J71, J82, J76, J35, J13, J50, J17, J65, J32, J42, J9, J92, J22, J3]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_19.txt **
+Nodes evalauted : 65365
+BEST C : 293625
+Best sequence : 
+[J91, J3, J64, J69, J31, J26, J36, J41, J96, J30, J51, J42, J99, J100, J11, J17, J68, J98, J25, J9, J14, J24, J33, J13, J35, J62, J77, J43, J46, J59, J72, J74, J7, J89, J49, J65, J5, J15, J78, J70, J86, J93, J6, J29, J52, J57, J4, J32, J2, J53, J16, J22, J67, J90, J8, J71, J1, J61, J28, J94, J40, J85, J27, J79, J92, J10, J50, J48, J84, J23, J63, J38, J80, J37, J56, J75, J19, J66, J18, J73, J21, J12, J34, J82, J44, J95, J39, J47, J88, J54, J58, J45, J20, J76, J81, J83, J55, J87, J60, J97]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_19.txt **
+Nodes evalauted : 74521
+BEST C : 295438
+Best sequence : 
+[J91, J3, J64, J69, J31, J26, J36, J41, J96, J30, J51, J42, J99, J100, J11, J17, J68, J98, J25, J9, J14, J24, J34, J13, J35, J62, J77, J43, J81, J59, J72, J74, J7, J10, J49, J65, J5, J15, J78, J70, J86, J93, J6, J29, J52, J89, J4, J1, J2, J53, J16, J22, J67, J90, J8, J21, J32, J61, J28, J94, J40, J85, J71, J79, J92, J38, J50, J48, J84, J23, J80, J95, J63, J75, J56, J37, J19, J66, J46, J73, J27, J12, J33, J82, J44, J18, J39, J47, J88, J54, J58, J45, J20, J76, J57, J83, J55, J87, J60, J97]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_19.txt **
+Nodes evalauted : 82036
+BEST C : 293625
+Best sequence : 
+[J91, J3, J64, J69, J31, J26, J36, J41, J96, J30, J51, J42, J99, J100, J11, J17, J68, J98, J25, J9, J14, J24, J33, J13, J35, J62, J77, J43, J46, J59, J72, J74, J7, J89, J49, J65, J5, J15, J78, J70, J86, J93, J6, J29, J52, J57, J4, J32, J2, J53, J16, J22, J67, J90, J8, J71, J1, J61, J28, J94, J40, J85, J27, J79, J92, J10, J50, J48, J84, J23, J63, J38, J80, J37, J56, J75, J19, J66, J18, J73, J21, J12, J34, J82, J44, J95, J39, J47, J88, J54, J58, J45, J20, J76, J81, J83, J55, J87, J60, J97]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_2.txt **
+Nodes evalauted : 74505
+BEST C : 283081
+Best sequence : 
+[J91, J32, J81, J85, J92, J66, J83, J2, J46, J61, J97, J84, J79, J3, J96, J15, J24, J45, J53, J59, J20, J57, J14, J12, J10, J48, J86, J87, J13, J62, J77, J64, J67, J8, J76, J23, J1, J35, J98, J75, J27, J5, J42, J73, J19, J65, J99, J18, J82, J38, J28, J93, J39, J26, J36, J4, J58, J11, J89, J72, J95, J21, J43, J31, J17, J25, J54, J69, J37, J40, J9, J63, J60, J78, J71, J33, J29, J52, J55, J94, J30, J51, J90, J100, J34, J80, J16, J88, J68, J22, J49, J44, J6, J50, J56, J70, J47, J7, J74, J41]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_2.txt **
+Nodes evalauted : 77615
+BEST C : 283143
+Best sequence : 
+[J91, J32, J81, J85, J92, J66, J83, J2, J46, J61, J97, J84, J79, J3, J96, J15, J24, J45, J53, J59, J20, J57, J14, J12, J10, J48, J86, J87, J13, J62, J77, J64, J67, J8, J76, J23, J38, J35, J98, J75, J5, J27, J42, J73, J19, J65, J99, J18, J82, J1, J28, J93, J39, J26, J100, J36, J47, J11, J89, J72, J95, J21, J43, J17, J29, J90, J54, J69, J37, J40, J9, J63, J71, J94, J55, J33, J80, J52, J60, J25, J58, J51, J78, J4, J31, J34, J16, J88, J30, J22, J49, J44, J6, J50, J56, J70, J68, J7, J74, J41]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_2.txt **
+Nodes evalauted : 83622
+BEST C : 283134
+Best sequence : 
+[J91, J32, J81, J85, J92, J66, J83, J2, J46, J61, J97, J84, J79, J3, J96, J15, J24, J45, J53, J59, J20, J57, J14, J12, J10, J48, J86, J87, J13, J62, J77, J64, J67, J8, J76, J23, J1, J35, J98, J75, J27, J5, J42, J73, J19, J65, J99, J18, J82, J38, J28, J93, J39, J26, J78, J4, J47, J11, J89, J17, J95, J21, J43, J31, J25, J90, J54, J69, J60, J40, J9, J72, J71, J94, J55, J33, J80, J52, J37, J29, J58, J51, J100, J36, J63, J34, J16, J88, J30, J22, J49, J44, J6, J50, J56, J70, J68, J7, J74, J41]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_3.txt **
+Nodes evalauted : 80005
+BEST C : 273690
+Best sequence : 
+[J36, J90, J62, J99, J82, J87, J8, J37, J65, J83, J10, J18, J96, J73, J54, J59, J86, J50, J75, J51, J20, J34, J66, J63, J49, J60, J44, J30, J48, J81, J88, J43, J38, J45, J24, J79, J67, J32, J71, J40, J7, J14, J42, J46, J55, J6, J5, J100, J2, J72, J29, J19, J64, J85, J16, J93, J91, J97, J21, J52, J28, J76, J47, J94, J33, J13, J78, J98, J58, J26, J17, J31, J70, J35, J22, J84, J69, J27, J92, J77, J68, J4, J39, J89, J23, J80, J15, J95, J61, J1, J12, J9, J57, J53, J74, J56, J25, J41, J3, J11]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_3.txt **
+Nodes evalauted : 88113
+BEST C : 273183
+Best sequence : 
+[J36, J90, J62, J99, J82, J87, J8, J37, J65, J83, J10, J18, J96, J73, J54, J59, J86, J50, J75, J51, J20, J34, J66, J63, J49, J60, J44, J30, J48, J81, J88, J43, J38, J45, J24, J79, J67, J32, J71, J40, J7, J14, J55, J46, J15, J6, J5, J100, J2, J29, J84, J19, J64, J85, J16, J93, J91, J97, J21, J52, J28, J76, J42, J94, J33, J13, J78, J98, J58, J26, J17, J31, J70, J27, J80, J72, J95, J69, J92, J77, J68, J4, J74, J89, J23, J22, J61, J3, J47, J9, J12, J1, J57, J53, J35, J56, J25, J41, J39, J11]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_3.txt **
+Nodes evalauted : 86223
+BEST C : 272605
+Best sequence : 
+[J36, J90, J62, J99, J82, J87, J8, J37, J42, J96, J10, J18, J83, J73, J54, J59, J86, J51, J75, J50, J20, J34, J66, J63, J49, J60, J44, J30, J1, J81, J88, J43, J38, J48, J24, J79, J67, J32, J71, J40, J7, J14, J55, J46, J15, J6, J5, J100, J2, J29, J97, J19, J64, J85, J16, J93, J91, J72, J21, J52, J28, J76, J47, J94, J33, J13, J78, J98, J58, J26, J31, J17, J22, J27, J80, J84, J77, J39, J92, J69, J68, J4, J74, J89, J23, J70, J61, J95, J65, J45, J12, J9, J57, J53, J35, J56, J25, J41, J3, J11]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_4.txt **
+Nodes evalauted : 81324
+BEST C : 288156
+Best sequence : 
+[J39, J71, J9, J13, J63, J73, J70, J26, J2, J34, J90, J6, J38, J93, J16, J40, J33, J97, J47, J46, J22, J98, J25, J74, J89, J19, J57, J87, J83, J21, J91, J72, J84, J41, J64, J20, J86, J32, J56, J5, J45, J61, J54, J36, J68, J81, J82, J85, J50, J28, J99, J12, J15, J95, J53, J79, J29, J49, J18, J44, J92, J52, J42, J17, J76, J94, J62, J100, J7, J48, J88, J35, J96, J10, J67, J59, J60, J78, J69, J77, J31, J23, J65, J43, J4, J30, J55, J3, J27, J8, J51, J37, J80, J11, J24, J75, J58, J1, J66, J14]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_4.txt **
+Nodes evalauted : 89648
+BEST C : 288951
+Best sequence : 
+[J39, J71, J9, J13, J63, J73, J70, J26, J2, J34, J90, J6, J38, J93, J16, J40, J33, J97, J20, J46, J22, J98, J25, J74, J89, J19, J57, J87, J83, J21, J91, J72, J75, J41, J18, J65, J86, J30, J56, J5, J45, J88, J54, J37, J50, J81, J82, J85, J47, J28, J99, J12, J15, J95, J53, J79, J29, J49, J31, J61, J84, J52, J42, J17, J76, J94, J62, J100, J7, J48, J43, J35, J44, J10, J67, J59, J60, J78, J69, J77, J64, J23, J68, J96, J4, J32, J55, J3, J27, J8, J51, J36, J80, J11, J24, J92, J58, J1, J66, J14]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_4.txt **
+Nodes evalauted : 90129
+BEST C : 287811
+Best sequence : 
+[J39, J71, J9, J13, J63, J73, J70, J26, J2, J34, J90, J6, J38, J93, J16, J40, J33, J97, J98, J46, J22, J47, J25, J74, J89, J19, J57, J87, J83, J21, J91, J72, J29, J41, J18, J64, J86, J30, J32, J5, J45, J61, J54, J37, J20, J81, J82, J17, J88, J28, J99, J12, J15, J95, J68, J79, J84, J49, J31, J44, J92, J52, J42, J36, J76, J94, J62, J100, J7, J48, J50, J35, J96, J10, J67, J59, J60, J43, J69, J77, J53, J23, J65, J78, J4, J56, J55, J3, J27, J8, J51, J85, J80, J11, J24, J75, J58, J1, J66, J14]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_5.txt **
+Nodes evalauted : 79712
+BEST C : 265286
+Best sequence : 
+[J75, J79, J43, J23, J88, J22, J64, J71, J66, J21, J36, J96, J82, J76, J70, J84, J81, J65, J27, J72, J7, J30, J37, J18, J11, J3, J48, J44, J8, J6, J52, J58, J57, J60, J38, J91, J32, J51, J100, J87, J29, J2, J83, J1, J63, J80, J50, J99, J86, J17, J90, J40, J53, J59, J42, J93, J92, J34, J45, J33, J26, J67, J69, J97, J31, J15, J95, J77, J5, J61, J12, J73, J28, J94, J25, J46, J9, J13, J49, J55, J62, J74, J14, J78, J24, J10, J41, J39, J4, J35, J98, J47, J68, J20, J89, J85, J19, J54, J16, J56]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_5.txt **
+Nodes evalauted : 81414
+BEST C : 265344
+Best sequence : 
+[J75, J79, J43, J23, J88, J22, J64, J71, J66, J21, J36, J96, J82, J76, J70, J84, J81, J65, J27, J57, J72, J30, J37, J18, J48, J3, J11, J44, J8, J6, J52, J58, J7, J60, J38, J91, J32, J50, J100, J87, J29, J51, J83, J1, J63, J80, J95, J99, J86, J17, J90, J55, J42, J59, J53, J93, J92, J67, J14, J33, J26, J45, J69, J74, J31, J15, J46, J77, J5, J61, J12, J73, J28, J94, J2, J16, J40, J34, J49, J78, J25, J97, J85, J9, J24, J10, J41, J39, J4, J35, J98, J47, J68, J62, J13, J20, J19, J54, J89, J56]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_5.txt **
+Nodes evalauted : 83769
+BEST C : 265344
+Best sequence : 
+[J75, J79, J43, J23, J88, J22, J84, J71, J66, J21, J36, J96, J82, J64, J70, J76, J81, J65, J27, J72, J7, J30, J37, J18, J11, J3, J48, J44, J8, J6, J52, J58, J57, J60, J38, J100, J32, J50, J91, J87, J29, J2, J83, J1, J63, J40, J95, J99, J86, J17, J90, J55, J42, J92, J53, J93, J59, J34, J45, J33, J26, J24, J69, J74, J31, J15, J46, J77, J5, J61, J12, J73, J28, J94, J25, J16, J9, J67, J49, J41, J62, J97, J51, J80, J14, J78, J10, J39, J4, J35, J98, J47, J68, J85, J89, J20, J19, J54, J13, J56]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_6.txt **
+Nodes evalauted : 72648
+BEST C : 288685
+Best sequence : 
+[J37, J63, J59, J32, J34, J48, J12, J69, J39, J47, J46, J75, J54, J68, J57, J88, J89, J78, J52, J61, J77, J62, J8, J44, J6, J90, J17, J42, J80, J66, J13, J18, J5, J24, J99, J2, J7, J51, J43, J84, J15, J38, J71, J23, J22, J27, J98, J40, J70, J72, J9, J1, J35, J79, J28, J41, J14, J49, J81, J82, J45, J100, J87, J26, J29, J67, J20, J85, J11, J36, J92, J60, J10, J16, J21, J58, J19, J74, J76, J83, J50, J55, J65, J86, J25, J94, J31, J56, J64, J96, J97, J53, J33, J3, J4, J30, J73, J95, J93, J91]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_6.txt **
+Nodes evalauted : 76178
+BEST C : 290739
+Best sequence : 
+[J37, J63, J59, J32, J34, J69, J57, J48, J39, J47, J46, J12, J54, J68, J66, J88, J89, J61, J52, J24, J90, J49, J8, J44, J6, J62, J65, J42, J80, J74, J13, J86, J5, J70, J99, J2, J7, J83, J43, J100, J56, J38, J71, J23, J22, J27, J98, J40, J78, J72, J84, J55, J35, J79, J28, J41, J14, J77, J81, J82, J45, J9, J87, J26, J29, J67, J20, J85, J11, J36, J92, J60, J10, J16, J21, J58, J19, J15, J76, J75, J50, J18, J17, J1, J25, J94, J31, J51, J64, J96, J97, J53, J33, J3, J4, J30, J73, J95, J93, J91]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_6.txt **
+Nodes evalauted : 84735
+BEST C : 291402
+Best sequence : 
+[J37, J63, J59, J32, J34, J69, J57, J88, J39, J61, J46, J12, J77, J47, J75, J48, J89, J66, J52, J24, J49, J62, J81, J44, J6, J90, J25, J42, J80, J50, J74, J18, J5, J70, J99, J2, J7, J83, J43, J84, J15, J38, J71, J23, J22, J27, J98, J40, J53, J72, J9, J55, J35, J79, J28, J41, J14, J54, J8, J82, J45, J96, J67, J26, J29, J87, J20, J85, J11, J36, J92, J60, J10, J16, J21, J58, J19, J56, J76, J51, J13, J1, J17, J86, J65, J94, J31, J78, J64, J100, J97, J68, J33, J3, J73, J30, J4, J95, J93, J91]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_7.txt **
+Nodes evalauted : 85919
+BEST C : 279225
+Best sequence : 
+[J86, J1, J94, J2, J14, J28, J24, J13, J81, J29, J43, J70, J50, J18, J10, J78, J15, J92, J97, J42, J69, J55, J33, J98, J39, J4, J53, J59, J77, J49, J75, J20, J52, J63, J9, J11, J76, J3, J7, J17, J57, J67, J38, J6, J32, J99, J95, J85, J5, J62, J47, J35, J37, J16, J80, J21, J84, J96, J34, J45, J90, J22, J64, J61, J87, J44, J72, J68, J91, J65, J74, J93, J71, J79, J19, J73, J40, J58, J41, J66, J30, J88, J82, J12, J100, J48, J26, J8, J83, J25, J60, J27, J23, J46, J89, J31, J54, J36, J51, J56]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_7.txt **
+Nodes evalauted : 90830
+BEST C : 278798
+Best sequence : 
+[J86, J1, J94, J2, J28, J14, J24, J13, J81, J29, J43, J70, J50, J18, J10, J78, J15, J92, J97, J42, J69, J55, J33, J98, J39, J4, J53, J59, J77, J49, J75, J20, J52, J63, J9, J11, J76, J3, J7, J17, J38, J67, J100, J6, J25, J99, J95, J96, J5, J66, J62, J35, J37, J16, J80, J21, J84, J85, J34, J45, J90, J22, J64, J61, J57, J44, J72, J68, J91, J65, J74, J93, J71, J79, J19, J32, J40, J58, J41, J12, J30, J88, J82, J73, J87, J48, J26, J31, J83, J47, J60, J27, J23, J46, J89, J8, J54, J36, J51, J56]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_7.txt **
+Nodes evalauted : 86863
+BEST C : 279284
+Best sequence : 
+[J86, J1, J94, J2, J28, J14, J24, J13, J81, J29, J43, J70, J50, J18, J10, J78, J15, J92, J97, J42, J69, J91, J54, J98, J39, J4, J53, J59, J77, J49, J75, J20, J52, J63, J9, J11, J76, J3, J7, J17, J57, J55, J38, J6, J32, J99, J95, J85, J5, J62, J47, J35, J37, J16, J80, J67, J84, J96, J34, J48, J90, J22, J64, J61, J87, J44, J72, J68, J26, J65, J74, J93, J71, J79, J19, J73, J40, J58, J41, J12, J30, J88, J82, J66, J100, J45, J21, J8, J83, J25, J60, J27, J23, J46, J89, J31, J33, J36, J51, J56]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_8.txt **
+Nodes evalauted : 66805
+BEST C : 275930
+Best sequence : 
+[J5, J55, J6, J19, J83, J39, J88, J58, J64, J68, J52, J50, J95, J87, J99, J90, J82, J79, J10, J42, J61, J29, J40, J21, J38, J60, J14, J27, J80, J57, J54, J24, J36, J30, J69, J48, J45, J23, J72, J93, J25, J77, J63, J59, J2, J73, J37, J41, J12, J97, J18, J1, J47, J26, J56, J67, J75, J89, J44, J8, J33, J53, J70, J9, J84, J92, J35, J16, J98, J28, J74, J15, J65, J91, J71, J32, J78, J3, J62, J46, J94, J7, J96, J22, J4, J81, J43, J31, J66, J86, J100, J85, J49, J51, J34, J11, J76, J17, J13, J20]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_8.txt **
+Nodes evalauted : 84630
+BEST C : 276590
+Best sequence : 
+[J5, J55, J6, J19, J83, J39, J88, J58, J64, J68, J52, J50, J95, J87, J99, J90, J82, J79, J10, J42, J61, J29, J38, J21, J23, J60, J14, J27, J40, J57, J97, J24, J36, J30, J69, J70, J45, J80, J72, J93, J25, J77, J63, J59, J2, J73, J37, J41, J12, J54, J18, J26, J4, J1, J56, J67, J75, J62, J44, J8, J33, J53, J89, J9, J84, J92, J35, J16, J98, J28, J74, J15, J96, J48, J71, J32, J78, J34, J22, J46, J94, J7, J65, J3, J47, J81, J43, J31, J66, J86, J100, J85, J49, J51, J91, J11, J76, J17, J13, J20]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_8.txt **
+Nodes evalauted : 81685
+BEST C : 276004
+Best sequence : 
+[J5, J55, J6, J19, J83, J39, J88, J58, J64, J68, J52, J50, J95, J87, J99, J90, J82, J79, J10, J42, J61, J29, J23, J21, J38, J60, J14, J27, J40, J57, J97, J24, J48, J30, J69, J70, J45, J80, J54, J93, J4, J77, J63, J59, J2, J73, J37, J41, J12, J72, J18, J26, J25, J1, J56, J67, J75, J89, J44, J8, J33, J53, J36, J9, J84, J92, J35, J16, J98, J28, J74, J15, J65, J3, J71, J32, J78, J34, J62, J46, J47, J7, J96, J22, J94, J81, J43, J31, J66, J86, J100, J85, J49, J51, J91, J11, J76, J17, J13, J20]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_9.txt **
+Nodes evalauted : 67830
+BEST C : 283484
+Best sequence : 
+[J42, J12, J8, J76, J39, J46, J57, J81, J2, J26, J58, J43, J52, J84, J23, J63, J47, J10, J28, J4, J15, J27, J30, J77, J1, J48, J25, J69, J62, J71, J65, J53, J45, J90, J16, J18, J83, J11, J37, J73, J60, J19, J49, J35, J89, J66, J99, J56, J94, J38, J40, J20, J97, J5, J34, J91, J13, J17, J51, J24, J78, J64, J22, J74, J86, J59, J80, J7, J21, J29, J68, J61, J95, J93, J31, J36, J100, J92, J98, J70, J54, J14, J87, J55, J3, J44, J33, J67, J50, J82, J32, J6, J41, J85, J75, J79, J96, J9, J72, J88]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_9.txt **
+Nodes evalauted : 85859
+BEST C : 282683
+Best sequence : 
+[J42, J12, J8, J28, J39, J76, J57, J81, J2, J26, J52, J43, J58, J46, J23, J63, J47, J10, J84, J4, J15, J27, J30, J77, J16, J48, J25, J69, J62, J90, J65, J53, J45, J83, J1, J18, J71, J11, J37, J73, J19, J89, J49, J35, J60, J66, J99, J24, J94, J38, J40, J20, J97, J5, J34, J91, J13, J17, J51, J56, J78, J64, J22, J74, J86, J59, J80, J7, J21, J29, J68, J61, J87, J93, J31, J36, J100, J92, J98, J70, J54, J14, J95, J75, J3, J44, J33, J67, J50, J82, J32, J6, J41, J85, J9, J79, J96, J55, J72, J88]
+
+** C:\Users\DIGIAJ\Desktop\qmda\jobShop-scheduling-simulatedAnniealing\instances\test100_9.txt **
+Nodes evalauted : 84191
+BEST C : 282754
+Best sequence : 
+[J42, J12, J8, J76, J39, J46, J57, J81, J2, J26, J58, J43, J52, J84, J23, J63, J47, J10, J28, J4, J15, J27, J30, J77, J16, J48, J25, J69, J62, J90, J65, J53, J45, J71, J1, J18, J83, J6, J37, J73, J19, J60, J49, J35, J89, J66, J99, J24, J94, J38, J40, J20, J97, J5, J34, J91, J13, J17, J51, J56, J78, J64, J22, J86, J11, J59, J80, J7, J21, J29, J68, J61, J95, J93, J31, J36, J100, J92, J98, J70, J54, J14, J87, J55, J3, J44, J33, J67, J50, J82, J32, J85, J41, J74, J75, J79, J96, J9, J72, J88]
+

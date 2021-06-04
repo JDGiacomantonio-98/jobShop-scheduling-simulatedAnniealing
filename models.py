@@ -34,6 +34,8 @@ class Job:
 			"init": 1,
 		}
 
+		self.proba: List[float] = [0 for _ in range(len(self.processing_times))] # stores the number of times this job was on i-th position in the best nodes
+
 	def __eq__(self, j: object) -> bool:
 		return True if self.id == j.id else False
 	
@@ -72,6 +74,9 @@ class Job:
 
 	def setCompletion(self, c: int, node: int, onMachine: int = 1):
 		self.completion[node.id][onMachine-1] = c
+	
+	def update_proba(self, position: int):
+		self.proba[position] += 1
 	
 
 class Node: 
@@ -127,7 +132,7 @@ class Node:
 	
 		"""
 		# Is there a better way to solve check eval the node?
-		ss = perf_counter()
+		# ss = perf_counter()
 		up_to = len(self.seq)-1 if up_to is None else up_to
 		onMachine = self.solver.problem.machines if onMachine is None else onMachine
 
@@ -196,11 +201,6 @@ class Node:
 
 	def getNeighborghs(self, rule='explorative'):
 
-		if rule == "complete":
-			for x in range(len(self.seq)):
-				for y in range(x+1, len(self.seq)):
-					yield Node.swap(Node(seq=self.get_seq(), solver=self.solver, childOf=self), y, x, parent=self)
-
 		if rule == "explorative":
 			j = self.seq.index(choice(self.seq))
 			i = j
@@ -214,6 +214,13 @@ class Node:
 				while i >= 0:
 					yield Node.swap(Node(seq=self.get_seq(), solver=self.solver, childOf=self), j, i)
 					i -= 1
+			return
+
+		if rule == "complete":
+			for x in range(len(self.seq)):
+				for y in range(x+1, len(self.seq)):
+					yield Node.swap(Node(seq=self.get_seq(), solver=self.solver, childOf=self), y, x, parent=self)
+			return
 
 		if rule == "pullDownstream-alignedfix":
 			self.eval_ideal_downstream()
@@ -225,7 +232,8 @@ class Node:
 					self.solver.eval_probaMove(n, temperature=self.solver.annielingProcess())
 					yield Node.swap(n, to, target)
 					i += 1
-			return self.neighborhood
+					self.neighborhood.add(n)
+			return
 
 		if rule == "rand-alignedfix":
 			self.eval_ideal_downstream()
@@ -236,6 +244,7 @@ class Node:
 						self.solver.eval_probaMove(Node.swap(n, to, target), temperature=self.solver.annielingProcess())
 						yield n
 						self.neighborhood.add(n)
+			return
 
 		if rule == "rand":
 			target = randint(0, len(self.seq)-1)
@@ -244,9 +253,7 @@ class Node:
 				target = randint(0, len(self.seq)-1)
 				to = randint(0, len(self.seq)-1)
 				yield Node.swap(Node(seq=self.get_seq(), solver=self.solver), to, target)
-		
-		if rule == "stress-best":
-			pass
+			return
 
 	def apply_perturbation(self, level: str = "soft-rand-alignedfix"):
 		i: int  = 0
@@ -283,10 +290,14 @@ class Node:
 	def eval_fixed(self):
 		self.fixed = {i for i, j in enumerate(self.seq_ideal_onLastMachine) if self.seq[i] == j} if self.fixed is None else self.fixed
 
-	def can_swap(self, target: int, to: int):
-		if target > to:
-			return True if self.seq[target].getRelease(onMachine=1) <= self.seq[to-1].getCompletion(node=self, onMachine=1) else False
-		return True if self.seq[to].getRelease(onMachine=1) <= self.seq[target-1].getCompletion(node=self, onMachine=1) else False
+	def can_swap(self, target: int, to: int, rule="proba"):
+		if rule == "proba":
+			return True if (self.seq[target].proba[to] >= self.seq[target].proba[target]) and (self.seq[to].proba[target] >= self.seq[to].proba[to]) else False
+
+		if rule == "preceeding-completion":
+			if target > to:
+				return True if self.seq[target].getRelease(onMachine=1) <= self.seq[to-1].getCompletion(node=self, onMachine=1) else False
+			return True if self.seq[to].getRelease(onMachine=1) <= self.seq[target-1].getCompletion(node=self, onMachine=1) else False
 
 	@staticmethod
 	def swap(n, target: int, to: int, parent=None):
@@ -310,8 +321,8 @@ class SimulatedAnnieling:
 		self.problem = p
 		self.open_nodes: Set = set()
 		self.nodes_count: int = 0
+		self.best: Node = None
 		self.head = head if isinstance(head, Node) else self.set_initial_sol(rule="compressFloats-sptDownstream") if head is None else self.set_initial_sol(rule="custom")#  the current node to be evalauted (a feasible permutation of jobs) to be evaluated ... this method has to e changed with the best on averange initial sols generator
-		self.best: Node = copy(self.head)
 
 		self.T = T0
 		self.annielingProcess = self.linearCooling if anniealingFunc is None else anniealingFunc
@@ -378,6 +389,30 @@ class SimulatedAnnieling:
 			self.save_as_best(n)
 
 			return n
+
+		if rule == "expert": # the expert knows that job-pair should be swapped if both jobs prefer at the same time to be in the other' one position
+			self.open_nodes = set() # drops all the still open nodes to let the solve method to only focus on the expert-driven ones
+			jobs = copy(self.problem.jobs)
+			seq = [None for _ in range(len(jobs))]
+			for j in jobs:
+				probas = copy(j.proba)
+				i = j.proba.index(max(probas))
+				while seq[i] is not None:
+					m = probas.pop(i)
+					i = j.proba.index(max(probas))
+					if j.proba[i] == 0:
+						i = j.proba.index(m)+1
+						try:
+							while seq[i] is not None:
+								i += 1
+							seq[i] = j
+						except IndexError:
+							i = j.proba.index(m)-1
+							while seq[i] is not None:
+								i -= 1
+							seq[i] = j
+				seq[i] = j
+			return Node(seq=seq, solver=self)
 
 		if rule == "erd-spt":
 			n = Node(seq=self.problem.sortBy_release(), solver=self)
@@ -457,9 +492,9 @@ class SimulatedAnnieling:
 			self.setTimeLimit(timeLimit)
 
 		if rule == "probabilistic": # SA explore also bad moves probabilistically !
-			while perf_counter()-self.problem.starting_time <= timeLimit:
+			while self.getProgress() < 1:
 				#ss = perf_counter()
-				for n in self.head.getNeighborghs(rule="explorative" if self.getProgress() <= 0.4 else "complete"):
+				for n in self.head.getNeighborghs(rule="explorative" if self.getProgress() <= 0.35 else "complete"):
 					self.annielingProcess(rate=1+(self.problem.starting_time/(max(0.96, self.T*uniform.rvs())*perf_counter())))
 					#print(f"T : {self.T}")
 					if self.eval_move(n):
@@ -467,10 +502,18 @@ class SimulatedAnnieling:
 					if n.eval() < self.best.eval():
 						self.save_as_best(n)
 				try:
-					self.move_head(self.best) if self.getProgress() >= 0.75 and uniform.rvs() > 1-self.getProgress() else self.move_head(choice(tuple(self.open_nodes))) 
+					
+					if self.getProgress() >= 0.50 and uniform.rvs() > 1-self.getProgress():
+						self.move_head(self.best)
+					elif self.getProgress() >= 0.75 and uniform.rvs() > 1-self.getProgress():
+						self.move_head(self.set_initial_sol(rule="expert"))
+						print("expert steps in ...")
+					else:
+						self.move_head(choice(tuple(self.open_nodes))) 
+					
 				except IndexError:
 					self.move_head(self.best)
-				else:
+				finally:
 					self.open_nodes -= {self.head}
 					self.annielingProcess(0.96)
 				#print(f"explore neighborhood in: {perf_counter()-ss}")
@@ -512,16 +555,24 @@ class SimulatedAnnieling:
 			self.solve()
 
 	def save_as_best(self, n: Node) -> None:
-		self.best = copy(n)
+		try:
+			for i, j in enumerate(self.best.get_seq()):
+				j.update_proba(i)
+			self.best = copy(n)
+		except AttributeError:
+			self.best = copy(n)
+			for i, j in enumerate(self.best.get_seq()):
+				j.update_proba(i)
+
 
 	def print_answer(self) -> str:
-		print("\n|********************** || RESULTS || ***********************|")
+		print("\n|********************** [ RESULTS ] ***********************|")
 		print(f"nodes evaluated : {self.nodes_count}")
 		print(f"Cmin found = {self.best.completion[0]}")
 		print(f"best schedule :\n{self.best.get_seq()}")
 	
 	def save_stats(self, folder_uri: str = f"{getcwd()}\\stats", useBin: bool = False):
-		stats: str = f"** {self.problem.dataset_loc} **\nBEST C : {self.head.eval()}\nBest sequence : \n{self.head.get_seq()}\n"
+		stats: str = f"** {self.problem.dataset_loc} **\nNodes evalauted : {self.nodes_count}\nBEST C : {self.best.completion[0]}\nBest sequence : \n{self.best.get_seq()}\n\n"
 		if useBin:
 			self.problem.stats_bin[0].append(stats)
 		else:
@@ -549,6 +600,10 @@ class Problem:
 			for line in f.readlines():
 				line = line[:-1].split(" ")
 				self.jobs += (Job(id=str(int(line[0])+1), processing_times=(int(line[1]), int(line[2])), release_dates=[int(line[3]), int(line[3])+int(line[1])]),)
+
+		proba = [0 for _ in range(len(self.jobs))]
+		for j in self.jobs:
+			j.proba = copy(proba)
 
 		if returnList:
 			return list(self.jobs)
@@ -586,16 +641,22 @@ def throw_stats_to_file(stats_bin: list, file_loc_uri: str = f"{getcwd()}\\stats
 	with open(f"{file_loc_uri}\\run-instance-{stats_bin[1]}", "w") as f:
 		for i in stats_bin[0]:
 			f.write(i)
-'''
-for f in scandir(f"{getcwd()}\\instances"):
-	print(f"\n** INSTANCE : {f.name} **")
-	p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\{f.name}")
-	p.solver.benchmark_singleInstance(runs=30)
-'''
 
-
-p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\test100_1.txt")
+'''
+p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\test100_2.txt")
 p.solver.solve(timeLimit=60)
+'''
+
+stats_bin = [[], int(time())]
+try:
+	for f in scandir(f"{getcwd()}\\instances"):
+		print(f"\n** INSTANCE : {f.name} **")
+		p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\{f.name}", stats_bin=stats_bin)
+		p.solver.benchmark_singleInstance(runs=3)
+	throw_stats_to_file(stats_bin)
+except KeyboardInterrupt:
+	throw_stats_to_file(stats_bin)
+
 
 
 '''
