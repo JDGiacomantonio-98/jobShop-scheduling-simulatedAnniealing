@@ -44,8 +44,11 @@ class Job:
 	def __ne__(self, j: object) -> bool:
 		return True if self.id != j.id else False
 
-	def __repr__(self) -> str:
+	def __str__(self) -> str:
 		return f"J{self.id}"
+
+	def __repr__(self):
+		return f"{int(self.id)-1}"
 
 
 	def add_node(self, node, parent): 
@@ -578,7 +581,7 @@ class SimulatedAnnieling:
 		if useBin:
 			self.problem.stats_bin[0].append(stats)
 		else:
-			with open(f"{folder_uri}\\run-instance-{self.problem.id}_{self.id}", "w") as f:
+			with open(f"{folder_uri}\\run-{self.problem.id}_{self.id}.txt", "w") as f:
 				f.write(stats)
 	
 
@@ -639,13 +642,34 @@ def assign_id_to_jobs_in_file(source_file_uri: str = f"{getcwd()}\\instances\\te
 				i+=1
 
 def throw_stats_to_file(stats_bin: list, file_loc_uri: str = f"{getcwd()}\\stats"):
-	with open(f"{file_loc_uri}\\run-instance-{stats_bin[1]}", "w") as f:
+	with open(f"{file_loc_uri}\\run--{stats_bin[1]}.txt", "w") as f:
 		for i in stats_bin[0]:
 			f.write(i)
+
+def groupResults(file_uri: str="run-instance-1622941712.txt"):
+	file_uri = f"{getcwd()}\\stats\\{file_uri}" if "\\" not in file_uri else file_uri
+	instances: Dict[str, Dict[str, List]]  = dict()
+	with open(file_uri, "r") as source:
+		for i in source.read().split("\n\n"):
+			i = i.split("\n")
+			try:
+				instances[i[0].split("\\")[-1][:-7]]["nodes"].append(int(i[1][18:]))
+				instances[i[0].split("\\")[-1][:-7]]["completion"].append(int(i[2][8:]))
+			except KeyError:
+				instances[i[0].split("\\")[-1][:-7]] = {"nodes": [int(i[1][18:])], "completion": [int(i[2][8:])]}
+	c = True
+	for k in instances.keys():
+		instances[k]["completion"].sort()
+
+		print(f"Instance : {k}\nC-min : {instances[k]['completion'][0]}\nC-median : {instances[k]['completion'][len(instances[k]['completion'])//2+1] if len(instances[k]['completion'])>1 else instances[k]['completion'][0]}\nC-max : {instances[k]['completion'][-1]}")
+		if c:
+			c = False if input("Press <ENTER> to print the next one or write <all> to print all results in once. Command: ") == "all" else True
+
 
 '''
 p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\test100_2.txt")
 p.solver.solve(timeLimit=60)
+
 '''
 
 stats_bin = [[], int(time())]
