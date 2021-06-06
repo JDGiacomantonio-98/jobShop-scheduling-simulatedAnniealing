@@ -666,12 +666,12 @@ def groupResults(file_uri: str="run-instance-1622941712.txt"):
 			c = False if input("Press <ENTER> to print the next one or write <all> to print all results in once. Command: ") == "all" else True
 
 
-'''
+
 p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\test100_2.txt")
 p.solver.solve(timeLimit=60)
 
-'''
 
+'''
 stats_bin = [[], int(time())]
 try:
 	for f in scandir(f"{getcwd()}\\instances"):
@@ -682,7 +682,7 @@ try:
 	throw_stats_to_file(stats_bin)
 except KeyboardInterrupt:
 	throw_stats_to_file(stats_bin)
-
+'''
 
 '''
 stats_bin = [[], int(time())]
