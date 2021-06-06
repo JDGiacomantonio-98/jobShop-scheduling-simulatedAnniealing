@@ -1,4 +1,3 @@
-\.vscode
-\__pycache__
-\performance-graphs
-*.png
+.vscode
+__pycache__
+stats/*.png
