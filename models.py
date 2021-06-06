@@ -9,6 +9,8 @@ from typing import Dict, List, Set, Tuple
 
 from scipy.stats import uniform
 
+from matplotlib import pyplot as plt
+
 
 class Job:
 	def __init__(
@@ -133,11 +135,11 @@ class Node:
 		"""
 		# Is there a better way to solve check eval the node?
 		# ss = perf_counter()
-		up_to = len(self.seq)-1 if up_to is None else up_to
-		onMachine = self.solver.problem.machines if onMachine is None else onMachine
 
 		if up_to == self.completion[1]:
 			return self.completion[0]
+
+		up_to = len(self.seq)-1 if up_to is None else up_to
 		
 		if up_to < self.completion[1]: # we already walked up to that
 			if up_to >= self.completion[1]//2:
@@ -151,6 +153,7 @@ class Node:
 			return c
 			
 		# we have to walk farer than done so far, knowing the completion backward already calculated
+		onMachine = self.solver.problem.machines if onMachine is None else onMachine
 		start_from = 0 if self.completion[1] < 0 else self.completion[1] + 1
 		i = start_from
 		for j in self.seq[start_from:up_to+1]:
@@ -199,7 +202,7 @@ class Node:
 					Node.swap(self, target, to)
 		return self
 
-	def getNeighborghs(self, rule='explorative'):
+	def getNeighbours(self, rule='explorative'):
 
 		if rule == "explorative":
 			j = self.seq.index(choice(self.seq))
@@ -303,7 +306,7 @@ class Node:
 	def swap(n, target: int, to: int, parent=None):
 		if to == 0:
 			n.seq[target].completion[n.id] = n.seq[target].completion["init"]
-		if  to != 0 and parent is not None:
+		elif parent is not None:
 			n.completion[0] = parent.walk_schedule(up_to=to-1) 
 			n.completion[1] = to-1
 		n.seq[target], n.seq[to] = n.seq[to], n.seq[target]
@@ -316,7 +319,7 @@ class Node:
 
 
 class SimulatedAnnieling:
-	def __init__(self, p, head: Node=None, T0: int=15000, anniealingFunc=None, probaFunc=None):
+	def __init__(self, p, head: Node=None, T0: int=25000, annielingFunc=None, probaFunc=None):
 		self.id = p.id # TO-DO: this will address the possibility to link multiple solvers to same problem instance
 		self.problem = p
 		self.open_nodes: Set = set()
@@ -325,7 +328,7 @@ class SimulatedAnnieling:
 		self.head = head if isinstance(head, Node) else self.set_initial_sol(rule="compressFloats-sptDownstream") if head is None else self.set_initial_sol(rule="custom")#  the current node to be evalauted (a feasible permutation of jobs) to be evaluated ... this method has to e changed with the best on averange initial sols generator
 
 		self.T = T0
-		self.annielingProcess = self.linearCooling if anniealingFunc is None else anniealingFunc
+		self.annielingProcess = self.linearCooling if annielingFunc is None else annielingFunc
 		self.probaEngine = self.sigmoidProbaFunc if probaFunc is None else probaFunc
 
 		self.timeLimit = 60
@@ -392,9 +395,8 @@ class SimulatedAnnieling:
 
 		if rule == "expert": # the expert knows that job-pair should be swapped if both jobs prefer at the same time to be in the other' one position
 			self.open_nodes = set() # drops all the still open nodes to let the solve method to only focus on the expert-driven ones
-			jobs = copy(self.problem.jobs)
-			seq = [None for _ in range(len(jobs))]
-			for j in jobs:
+			seq = [None for _ in range(len(self.problem.jobs))]
+			for j in self.problem.jobs:
 				probas = copy(j.proba)
 				i = j.proba.index(max(probas))
 				while seq[i] is not None:
@@ -454,24 +456,24 @@ class SimulatedAnnieling:
 		return n
 	
 	def linearCooling(self, rate: float = 0.90) -> float:
-		if uniform.rvs() > 0.9990: # apply perturbation in temperature
-			self.T = 10000*max(1.5, 3*uniform.rvs())
+		if uniform.rvs() > 0.9997: # apply perturbation in temperature
+			self.T = 10000*max(1.2, 2.5*uniform.rvs())
 		else:
 			self.T *= rate
 
 	def eval_probaMove(self, to: Node, temperature: float=None) -> None:
 		temperature = self.T if temperature is None else temperature
-		to.setProbaMove(self.probaEngine(neighborgh=to, temperature=temperature) if self.probaEngine == self.sigmoidProbaFunc else self.probaEngine(self.head, neighborgh=to, temperature=temperature))
+		to.setProbaMove(self.probaEngine(neighbour=to, temperature=temperature) if self.probaEngine == self.sigmoidProbaFunc else self.probaEngine(self.head, neighbour=to, temperature=temperature))
 
-	def sigmoidProbaFunc(self, neighborgh: Node, temperature: int, minimisation=True) -> float:
+	def sigmoidProbaFunc(self, neighbour: Node, temperature: int, minimisation=True) -> float:
 		if minimisation:
-			if neighborgh.eval()/self.head.eval() > max(1.2, 1.8-self.getProgress()):
+			if neighbour.eval()/self.head.eval() > max(1.2, 1.8-self.getProgress()):
 				return 0
-			distance = neighborgh.eval() - self.head.eval()
+			distance = neighbour.eval() - self.head.eval()
 		else:
-			if neighborgh.eval()/self.head.eval() < 0.5+(self.getProgress()/2):
+			if neighbour.eval()/self.head.eval() < 0.5+(self.getProgress()/2):
 				return 0
-			distance = self.head.eval() - neighborgh.eval()
+			distance = self.head.eval() - neighbour.eval()
 		k = (distance/temperature)
 		if k <= 230:
 			return 1/(1+(EXP**k))
@@ -490,39 +492,39 @@ class SimulatedAnnieling:
 
 		if timeLimit is not None:
 			self.setTimeLimit(timeLimit)
-
+		#temps = tuple()
 		if rule == "probabilistic": # SA explore also bad moves probabilistically !
 			while self.getProgress() < 1:
 				#ss = perf_counter()
-				for n in self.head.getNeighborghs(rule="explorative" if self.getProgress() <= 0.35 else "complete"):
-					self.annielingProcess(rate=1+(self.problem.starting_time/(max(0.96, self.T*uniform.rvs())*perf_counter())))
+				for n in self.head.getNeighbours(rule="explorative" if self.getProgress() >= 0.60 else "complete" if self.getProgress() > 0.5 else "explorative"):
+					self.annielingProcess(rate=1+(uniform.rvs()*(self.problem.starting_time/(self.T*uniform.rvs()*perf_counter()))))
 					#print(f"T : {self.T}")
+					#temps += (self.T,)
 					if self.eval_move(n):
 						self.open_nodes.add(n)
 					if n.eval() < self.best.eval():
 						self.save_as_best(n)
 				try:
 					
-					if self.getProgress() >= 0.50 and uniform.rvs() > 1-self.getProgress():
-						self.move_head(self.best)
-					elif self.getProgress() >= 0.75 and uniform.rvs() > 1-self.getProgress():
+					if self.getProgress() >= 0.92 and uniform.rvs() > 1.87-self.getProgress():
 						self.move_head(self.set_initial_sol(rule="expert"))
-						print("expert steps in ...")
 					else:
-						self.move_head(choice(tuple(self.open_nodes))) 
-					
+						self.move_head(self.best if uniform.rvs() > 1-self.getProgress() else choice(tuple(self.open_nodes)))
+
 				except IndexError:
 					self.move_head(self.best)
 				finally:
 					self.open_nodes -= {self.head}
-					self.annielingProcess(0.96)
+					self.annielingProcess(0.9995 if uniform.rvs() >= 0.80 else 1.0002)
 				#print(f"explore neighborhood in: {perf_counter()-ss}")
+			#plt.plot(temps)
+			#plt.savefig("graphs\\temperature-"+self.problem.dataset_loc.split('\\')[-1].split(".")[0]+".png")
 			self.print_answer()
 			self.save_stats(useBin=self.problem.stats_bin is not None)
-			
+			 
 		if rule == "firstImprovement":
 			while perf_counter()-self.problem.starting_time <= timeLimit:
-				for n in self.head.getNeighborghs(rule="pullDownstream-alignedfix"):
+				for n in self.head.getNeighbours(rule="pullDownstream-alignedfix"):
 					if n.eval() < self.head.eval():
 						self.eval_move(n)
 						break
@@ -534,7 +536,7 @@ class SimulatedAnnieling:
 			i=0	
 			while perf_counter()-self.problem.starting_time <= timeLimit:
 				best = self.head
-				for n in self.head.getNeighborghs(rule="pullDownstream-alignedfix"):
+				for n in self.head.getNeighbours(rule="pullDownstream-alignedfix"):
 					best = n if n.eval() < best.eval() else best # TO-DO: is it right to remove bad nodes?
 				i += 1 if best == self.head else 0
 				if i > 3: # algorithm converged into local minima
@@ -608,13 +610,12 @@ class Problem:
 		if returnList:
 			return list(self.jobs)
 	
-	def sortBy_release(self, jobs: list = None, onMachine: int = 1, append_stats: bool = False):
+	def sortBy_release(self, jobs: list = None, onMachine: int = 1):
 
 		seq = list(self.jobs) if jobs is None else jobs
 		
 		seq.sort(key=lambda x:x.getRelease(onMachine=onMachine))
-		if append_stats:
-			return (seq, min(seq), max(seq))
+
 		return seq
 
 	def sortBy_processingTimes(self, jobs: list = None, onMachine: int = 1, weighted: bool = False, caller: Node = None):
@@ -650,13 +651,13 @@ p.solver.solve(timeLimit=60)
 stats_bin = [[], int(time())]
 try:
 	for f in scandir(f"{getcwd()}\\instances"):
-		print(f"\n** INSTANCE : {f.name} **")
-		p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\{f.name}", stats_bin=stats_bin)
-		p.solver.benchmark_singleInstance(runs=3)
+		if f.name != "complexity-analysis":
+			print(f"\n** INSTANCE : {f.name} **")
+			p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\{f.name}", stats_bin=stats_bin)
+			p.solver.benchmark_singleInstance(runs=18)
 	throw_stats_to_file(stats_bin)
 except KeyboardInterrupt:
 	throw_stats_to_file(stats_bin)
-
 
 
 '''

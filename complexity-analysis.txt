@@ -1,0 +1,193 @@
+def set_initial_sol(self, rule: str = "compressFloats-sptDownstream") -> Node:
+		
+		if rule == "compressFloats-sptDownstream": >>> O(|J|*|M|) + O(4) + ((15+10|M|)|J|**2 + |J|(31+33k-10|M|(k+1)) + k(18k-10|M|-31)) + O(2+NodesProps+|J|) >>> O( ((15+10|M|)|J|**2 + |J|(32+|M|+33k-10|M|(k+1)) + k(18k-10|M|-31) + 6 + NodesProps) )
+			n = Node(self.problem.sortBy_release(), solver=self, is_initial=True) >>> O(|J|*|M|)
+			head: int = n.seq[0].getRelease(node=n) >>> O(1)
+			horizon: int = n.seq[0].getProcessingTime() >>> O(1)
+			k: int = 0 >>> O(1)
+			target: int = int() >>> O(1)
+			while k < len(n.seq)-1: >>> (O(|J|-k)*((O(|J|-k)*O(4))+O(3)+O(|J|-k)*O(13)+O(2)+O(22+|J|*(10|M|-3)-10|M|)+O(|J|-k+1)+O(5))) >>> O( (15+10|M|)|J|**2 + |J|(31+33k-10|M|(k+1)) + k(18k-10|M|-31) )
+				for i in range(k, len(n.seq)): >>> O(|J|-k)*O(4)
+					if n.seq[i].getRelease(node=n) != head: >>> O(2)
+						break >>> O(1)
+					if n.seq[i].getProcessingTime(1) >= horizon: >>> O(2)
+						horizon = n.seq[i].getProcessingTime(1) >>> O(1)
+						target = i >>> O(1)
+				horizon += head >>> O(1)
+
+				min:int = horizon + n.seq[target].getProcessingTime(2) >>> O(2)
+				for i in range(k, len(n.seq)): >>> O(|J|-k)*O(13)
+					if n.seq[i].getRelease(node=n) + n.seq[i].getProcessingTime(1) > horizon: >>> O(2)
+						break >>> O(1)
+					if n.seq[i].getRelease(node=n) + n.seq[i].getProcessingTime(1) + n.seq[i].getProcessingTime(2) < min: >>> O(6)
+						min = n.seq[i].getRelease(node=n) + n.seq[i].getProcessingTime(1) + n.seq[i].getProcessingTime(2) >>> O(6)
+						target = i >>> O(1)
+
+				target = n.seq.pop(target) >>> O(1) # we provide the index of what to pop
+				n.seq.insert(k, target) >>> O(1)  # we provide the index of what to insert
+				head = n.walk_schedule(onMachine=1, up_to=k)  >>> O(22+|J|*(10|M|-3)-10|M|) #check complexity analysis of walk_schedule
+				for i in range(k+1, len(n.seq)):  >>> O(|J|-k+1)
+					if n.seq[i].getRelease(node=n) + n.seq[i].getProcessingTime(1) > horizon:  >>> O(4)
+						break  >>> O(1)
+					n.seq[i].setRelease(max(head, n.seq[i].getRelease(node=n)), node=n)  >>> O(3)
+				head = n.seq[k+1].getRelease(node=n)  >>> O(2)
+				horizon: int = n.seq[k+1].getProcessingTime(1)  >>> O(2)
+				k += 1  >>> O(1)
+			self.save_as_best(n)  >>> O(1+NodesProps+|J|)
+
+			return n  >>> O(1)
+
+		if rule == "expert": O( 2 + |J| + |J|*(|J| + |J|*(1+|J|-1+2+|J|+2+2(|J|-1)+1) + |J||M| ) >>> O( 2 + 4|J|**3 + 2|J|**2 + (1+|M|)|J| )
+			self.open_nodes = set()  >>> O(2)
+			seq = [None for _ in range(len(jobs))]  >>> O(|J|)
+			for j in jobs:  >>> O(|J|)
+				i = j.proba.index(max(probas))  >>> O(|J|)
+				while seq[i] is not None: >>> O(|J|)
+					m = probas.pop(i)  >>> O(1)
+					i = j.proba.index(max(probas))  >>> O(|J|-1)
+					if j.proba[i] == 0:  >>> O(2)
+						i = j.proba.index(m)+1  >>> O(|J|+2)
+						try:
+							while seq[i] is not None:  >>> O(|J|-1) # in the worse case the last max before 0 is in first position and the only available None position is the last
+								i += 1  >>> O(1)
+							seq[i] = j  >>> O(1)
+						except IndexError:
+							i = j.proba.index(m)-1  >>> O(|J|+2)
+							while seq[i] is not None:  >>> O(|J|-1) # in the worse case the last max before 0 is in last position and the only available None position is the first
+								i -= 1  >>> O(1)
+							seq[i] = j  >>> O(1)
+				seq[i] = j  >>> O(1)
+			return Node(seq=seq, solver=self) >>> O(|J||M|)
+
+		if rule == "erd-spt":  >>> O( |J|(Log(|J|)+|M|) + 22 + |J|(1+10|M|Log(|J|)) - 10|M| + 4|J|**2 + 36|J| + 1)  >>> O( 23 + 4|J|**2 + |J|(Log(|J|)(1+|M|)+47+|M|) - 10|M|) 
+			n = Node(seq=self.problem.sortBy_release(), solver=self)  >>> O(|J|log(|N|)+|J||M|) >>> O( |J|(Log(|J|)+|M|) )
+			n.eval_ideal_downstream()  >>> O( 22 + |J|(1+10|M|Log(|J|)) - 10|M| )
+
+			return n.overlap_sequences() O( 4|J|**2 + 36|J| + 1 )
+
+
+def walk_schedule(self, onMachine: int = None, up_to: int = None):  >>> O(22+|J|*(10|M|-3)-10|M|) if up_to > self.completion[1] elif up_to < self.completion[1] O(|J|+9) else O(3)
+
+		if up_to == self.completion[1]:  >>> O(2)+O(1) >>> O(3)
+			return self.completion[0]  >>> O(1)
+
+		up_to = len(self.seq)-1 if up_to is None else up_to  >>> O(2)
+
+		if up_to < self.completion[1]:  >>> O(2)+O(3)+O(1)+O(|J|)+O(1) >>> O(|J|+7)
+			if up_to >= self.completion[1]//2:  >>> O(3)+O(1)+O(|J|)+O(1) >>> O(|J|+5) in both cases
+				c = self.completion[0]  >>> O(1)
+				for i in range(self.completion[1], up_to, -1):  >>> O(|J|/2)*O(2) >>> O(|J|)
+					c -= self.seq[i].getCompletion(onMachine=self.solver.problem.machines, node=self)  >>> O(2)
+				return c   >>> O(1)
+			c = 0   >>> O(1)
+			for i in range(up_to+1):  >>> O(|J|/2)*O(2) >>> O(|J|)
+				c += self.seq[i].getCompletion(onMachine=self.solver.problem.machines, node=self)  >>> O(2)
+			return c  >>> O(1)
+		
+        onMachine = self.solver.problem.machines if onMachine is None else onMachine  >>> O(2)
+		
+		start_from = 0 if self.completion[1] < 0 else self.completion[1] + 1  >>> O(2)
+		i = start_from  >>> O(1)
+		for j in self.seq[start_from:up_to+1]:  >>> O(4)+[O(1)+O(1)+O(2)+O(3)+O(2)+O(1)+O(1)+O(1)]+O(|J|-1)*[O(6)+O(|M|-1)*[O(6)+O(4)]+O(1)] >>> O(12+(|J|-1)*(7+(|M|-1)*10)) >>> O(16+(|J|-1)*(7+10|M|-10)) >>> O(16+7|J|+10|J||M|-10|J|-7-10|M|+10) >>> O(19+|J|*(10|M|-3)-10|M|)
+			if i > up_to:  >>> O(1)
+				break  >>> O(1)
+			if i == 0:  >>> O(1)
+				if j.getCompletion(onMachine=self.solver.problem.machines, node=self) is None:  >>> O(2)
+					j.completion[self.id] = copy(j.completion["init"])  >>> O(3)
+				self.completion[0] = j.getCompletion(onMachine=self.solver.problem.machines, node=self)  >>> O(2)
+				self.completion[1] = 0  >>> O(1)
+				i += 1  >>> O(1)
+				continue  >>> O(1)
+			j.setCompletion(
+				max(self.seq[i-1].getCompletion(onMachine=1, node=self), j.getRelease(onMachine=1)) + j.getProcessingTime(1),
+				onMachine=1,
+				node=self)  >>> O(6)
+			for m in range(2, onMachine+1):  >>> O(|M|-1)
+				j.setCompletion(
+					max(self.seq[i-1].getCompletion(onMachine=m, node=self), j.getCompletion(onMachine=m-1, node=self)) + j.getProcessingTime(m),
+					onMachine=m,
+					node=self)  >>> O(6)
+				if m == self.solver.problem.machines:  >>> O(2)
+					self.completion[0] += j.getCompletion(onMachine=m, node=self)  >>> O(2)
+			i += 1  >>> O(1)
+		if onMachine == self.solver.problem.machines:  >>> O(2)
+			self.completion[1] = up_to  >>> O(1)
+
+		if up_to < len(self.seq)-1:  >>> O(2)+O(2) >>> O(4)
+			return self.seq[up_to].getCompletion(onMachine=onMachine, node=self)  >>> O(2)
+		return self.completion[0]  >>> O(1)
+
+def eval_ideal_downstream(self):  >>> O(22+|J|*(10|M|-3)-10|M| + |J| + |J|Log(|J|) + |J| + 2|J| ) >>>  O( 22 + |J|(1+10|M|Log(|J|)) - 10|M| )
+    self.walk_schedule(returnList=False) if self.completion[0] is None else None  >>> O(22+|J|*(10|M|-3)-10|M|)
+    self.seq_ideal_onLastMachine = [j for j in self.solver.problem.sortBy_processingTimes(self.get_seq(), 2, weighted=True)] if self.seq_ideal_onLastMachine is None else self.seq_ideal_onLastMachine  >>>  O(|J| + |J|Log(|J| + |J|)
+    self.eval_fixed()  >>> O(2|J|)
+
+def overlap_sequences(self):  >>> O(2|J|*(2|J| + 18) + 1) >>> O( 4|J|**2 + 36|J| + 1 )
+    for to in self.eval_swaps(rule="conservative"):  >>> O(2|J|)
+            target = self.seq.index(self.seq_ideal_onLastMachine[to])  >>> O(|J|)
+            if self.can_swap(target=target, to=to, rule="preceeding-completion"):  >>> O(5)
+                Node.swap(self, target, to)  >>> O(13 + |J|)
+    return self  >>> O(1)
+
+def eval_swaps(self, rule="conservative", returnObj: bool = True):
+    if rule == 'conservative':  >>> O(1)
+        self.swaps = {i for i, j in enumerate(self.seq_ideal_onLastMachine) if self.seq[i] != j}  >>> O(2|J|)
+
+    if returnObj:  >>> O(1)
+        return self.swaps  >>> O(|J|)
+
+def can_swap(self, target: int, to: int, rule="proba"):
+    if rule == "proba":  >>> O(1)
+        return True if (self.seq[target].proba[to] >= self.seq[target].proba[target]) and (self.seq[to].proba[target] >= self.seq[to].proba[to]) else False  >>> O(3)
+
+    if rule == "preceeding-completion":  >>> O(1)
+        if target > to:  >>> O(1)
+            return True if self.seq[target].getRelease(onMachine=1) <= self.seq[to-1].getCompletion(node=self, onMachine=1) else False  >>> O(3)
+        return True if self.seq[to].getRelease(onMachine=1) <= self.seq[target-1].getCompletion(node=self, onMachine=1) else False  >>> O(3)
+
+def swap(n, target: int, to: int, parent=None):  >>> O(13 + |J|)
+    if to == 0:  >>> O(1)
+        n.seq[target].completion[n.id] = n.seq[target].completion["init"]  >>> O(1)
+    elif parent is not None:  >>> O(1)
+        n.completion[0] = parent.walk_schedule(up_to=to-1)  >>>  O(|J|+9)
+        n.completion[1] = to-1  >>> O(1)
+    n.seq[target], n.seq[to] = n.seq[to], n.seq[target]  >>> O(2)
+    return n  >>> O(1)
+
+def sortBy_release(self, jobs: list = None, onMachine: int = 1, append_stats: bool = False):  >>> O( |J|(1+Log(|J|)) )
+
+    seq = list(self.jobs) if jobs is None else jobs >>> O(|J|)
+    
+    seq.sort(key=lambda x:x.getRelease(onMachine=onMachine)) >>> O(|J|Log(|J|)
+    if append_stats: >>> O(1)
+        return (seq, min(seq), max(seq)) >>> O( 2|J|Log(|J| ) # deprecated
+    return seq >>> O(1)
+
+def sortBy_processingTimes(self, jobs: list = None, onMachine: int = 1, weighted: bool = False, caller: Node = None):  >>> O( |J|(1 + Log(|J|)) )
+
+    seq = list(self.jobs) if jobs is None else jobs >>> O(|J|)
+
+    if caller is None: >>> O(1)
+        weighted = False >>> O(1)
+    seq.sort(key=lambda x:x.getProcessingTime(onMachine=onMachine, weighted=weighted, node=caller))  >>> O( |J|Log(|J|) )
+    return seq  >>> O(1)
+
+def getProcessingTime(self, onMachine: int = 1, weighted: bool = False, node=None):  >>> O(2)
+    try:
+        return self.processing_times[onMachine-1] if not weighted else self.processing_times[onMachine-1]/self.weight["init" if node is None else node.id] >>> O(2)
+    except IndexError:
+        print(f"No such machine for this job: this job is processes on {len(self.processing_times)} machines")
+        return None
+
+def eval_fixed(self):  >>> O(2*|J|)
+    self.fixed = {i for i, j in enumerate(self.seq_ideal_onLastMachine) if self.seq[i] == j} if self.fixed is None else self.fixed  >>> O(2*|J|)
+
+def save_as_best(self, n: Node):   >>> O(1+|J|)+O(|NodeAttributes|) >>> O(1+NodesProps+|J|)
+    try:
+        for i, j in enumerate(self.best.get_seq()):  >>> O(1)+(O(|J|)*O(1)) >>> O(1+|J|)
+            j.update_proba(i)  >>> O(1)
+        self.best = copy(n)   >>> O(NodeProps=const.)
+    except AttributeError: # equal as above
+        self.best = copy(n)
+        for i, j in enumerate(self.best.get_seq()):
+            j.update_proba(i)
