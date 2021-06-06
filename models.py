@@ -639,15 +639,15 @@ def assign_id_to_jobs_in_file(source_file_uri: str = f"{getcwd()}\\instances\\te
 				i+=1
 
 def throw_stats_to_file(stats_bin: list, file_loc_uri: str = f"{getcwd()}\\stats"):
-	with open(f"{file_loc_uri}\\run-instance-{stats_bin[1]}", "w") as f:
+	with open(f"{file_loc_uri}\\run-{stats_bin[1]}.txt", "w") as f:
 		for i in stats_bin[0]:
 			f.write(i)
 
-'''
+
 p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\test100_2.txt")
 p.solver.solve(timeLimit=60)
-'''
 
+'''
 stats_bin = [[], int(time())]
 try:
 	for f in scandir(f"{getcwd()}\\instances"):
@@ -658,7 +658,7 @@ try:
 	throw_stats_to_file(stats_bin)
 except KeyboardInterrupt:
 	throw_stats_to_file(stats_bin)
-
+'''
 
 '''
 stats_bin = [[], int(time())]
