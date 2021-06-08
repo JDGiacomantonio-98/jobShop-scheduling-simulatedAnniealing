@@ -145,11 +145,11 @@ def can_swap(self, target: int, to: int, rule="proba"):
             return True if self.seq[target].getRelease(onMachine=1) <= self.seq[to-1].getCompletion(node=self, onMachine=1) else False  >>> O(3)
         return True if self.seq[to].getRelease(onMachine=1) <= self.seq[target-1].getCompletion(node=self, onMachine=1) else False  >>> O(3)
 
-def swap(n, target: int, to: int, parent=None):  >>> O(13 + |J|)
+def swap(n, target: int, to: int, parent=None):  >>> O(15 + |J|)
     if to == 0:  >>> O(1)
         n.seq[target].completion[n.id] = n.seq[target].completion["init"]  >>> O(1)
     elif parent is not None:  >>> O(1)
-        n.completion[0] = parent.walk_schedule(up_to=to-1)  >>>  O(|J|+9)
+        n.completion[0] = parent.walk_schedule(up_to=to-1)  >>>  O(|J|+9-1) # at least 1 position has to change
         n.completion[1] = to-1  >>> O(1)
     n.seq[target], n.seq[to] = n.seq[to], n.seq[target]  >>> O(2)
     return n  >>> O(1)
