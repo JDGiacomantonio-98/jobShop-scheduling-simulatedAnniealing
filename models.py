@@ -495,33 +495,47 @@ class SimulatedAnnieling:
 
 		if timeLimit is not None:
 			self.setTimeLimit(timeLimit)
-		#temps = tuple()
+		'''
+		temps = tuple()
+		temps_milestones = {"explorative": 0, "complete": 0}
+		'''
 		if rule == "probabilistic": # SA explore also bad moves probabilistically !
 			while self.getProgress() < 1:
 				#ss = perf_counter()
-				for n in self.head.getNeighbours(rule="explorative" if self.getProgress() >= 0.60 else "complete" if self.getProgress() > 0.5 else "explorative"):
+				for n in self.head.getNeighbours(rule="explorative" if self.getProgress() >= 0.6 else "complete" if self.getProgress() >= 0.5 else "explorative"):
 					self.annielingProcess(rate=1+(uniform.rvs()*(self.problem.starting_time/(self.T*uniform.rvs()*perf_counter()))))
 					#print(f"T : {self.T}")
-					#temps += (self.T,)
-					if self.eval_move(n):
+					'''
+					if self.getProgress() > 0.5 and self.getProgress()<=0.6:
+						temps_milestones["complete"] = self.nodes_count 
+					temps += (self.T,)
+					'''
+					if self.eval_move(n):	
 						self.open_nodes.add(n)
 					if n.eval() < self.best.eval():
 						self.save_as_best(n)
 				try:
 					
-					if self.getProgress() >= 0.92 and uniform.rvs() > 1.87-self.getProgress():
+					if self.getProgress() >= 0.91 and uniform.rvs() > 1.87-self.getProgress():
 						self.move_head(self.set_initial_sol(rule="expert"))
 					else:
-						self.move_head(self.best if uniform.rvs() > 1-self.getProgress() else choice(tuple(self.open_nodes)))
+						self.move_head(self.best if uniform.rvs() > 0.9999-self.getProgress() else choice(tuple(self.open_nodes)))
 
 				except IndexError:
 					self.move_head(self.best)
 				finally:
 					self.open_nodes -= {self.head}
-					self.annielingProcess(0.9995 if uniform.rvs() >= 0.80 else 1.0002)
+					'''
+					if self.getProgress() < 0.5:
+						temps_milestones["explorative"] = self.nodes_count
+					self.annielingProcess(1-self.getProgress() if uniform.rvs() >= 0.80 else 1.0005)
+					'''
 				#print(f"explore neighborhood in: {perf_counter()-ss}")
-			#plt.plot(temps)
-			#plt.savefig("graphs\\temperature-"+self.problem.dataset_loc.split('\\')[-1].split(".")[0]+".png")
+			'''
+			plt.plot(temps)
+			plt.savefig("graphs\\temperature-"+self.problem.dataset_loc.split('\\')[-1].split(".")[0]+".png")
+			print(temps_milestones["explorative"], temps_milestones["complete"])
+			'''
 			self.print_answer()
 			self.save_stats(useBin=self.problem.stats_bin is not None)
 			 
