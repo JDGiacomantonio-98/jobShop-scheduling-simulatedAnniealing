@@ -485,6 +485,7 @@ class SimulatedAnnieling:
 		self.head = to
 			
 	def solve(self, timeLimit: int = None, rule: str = "probabilistic") -> None:
+		print(f"\nInitial head set! C: {self.head.eval()}")
 
 		if timeLimit is not None:
 			self.setTimeLimit(timeLimit)
@@ -501,7 +502,7 @@ class SimulatedAnnieling:
 
 				try:
 					
-					if self.getProgress() >= 0.91 and uniform.rvs() > 1.87-self.getProgress():
+					if self.getProgress() >= 0.97 and uniform.rvs() > 1.9-self.getProgress():
 						self.move_head(self.set_initial_sol(rule="expert"))
 					else:
 						self.move_head(self.best if uniform.rvs() > 0.9999-self.getProgress() else choice(tuple(self.open_nodes)))
@@ -592,7 +593,7 @@ class Problem:
 
 		with open(file_uri, "r") as f:
 			for line in f.readlines():
-				line = line[:-1].split(" ")
+				line = line[:-1].split("\t")
 				self.jobs += (Job(id=str(int(line[0])+1), processing_times=(int(line[1]), int(line[2])), release_dates=[int(line[3]), int(line[3])+int(line[1])]),)
 
 		proba = [0 for _ in range(len(self.jobs))]
@@ -635,7 +636,7 @@ def throw_stats_to_file(stats_bin: list, file_loc_uri: str = f"{getcwd()}\\stats
 		for i in stats_bin[0]:
 			f.write(i)
 
-def groupResults(file_uri: str="run-instance-1622941712.txt"):
+def groupResults(file_uri: str="run--1623183311.txt"):
 	file_uri = f"{getcwd()}\\stats\\{file_uri}" if "\\" not in file_uri else file_uri
 	instances: Dict[str, Dict[str, List]]  = dict()
 	with open(file_uri, "r") as source:
@@ -656,7 +657,7 @@ def groupResults(file_uri: str="run-instance-1622941712.txt"):
 
 
 
-p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\test100_2.txt")
+p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\do00.txt")
 p.solver.solve(timeLimit=60)
 
 
@@ -667,7 +668,7 @@ try:
 		if f.name != "complexity-analysis":
 			print(f"\n** INSTANCE : {f.name} **")
 			p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\{f.name}", stats_bin=stats_bin)
-			p.solver.benchmark_singleInstance(runs=18)
+			p.solver.benchmark_singleInstance(runs=24)
 	throw_stats_to_file(stats_bin)
 except KeyboardInterrupt:
 	throw_stats_to_file(stats_bin)
@@ -680,4 +681,8 @@ for f in scandir(f"{getcwd()}\\instances"):
 	p = Problem(jobs_file_uri=f"{getcwd()}\\instances\\{f.name}", stats_bin=stats_bin)
 	p.solver.solve(timeLimit=60)
 throw_stats_to_file(stats_bin)
+'''
+
+'''
+groupResults()
 '''
